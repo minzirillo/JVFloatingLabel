@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<preferences stamp="5">
+	<com.4d>
+		<web>
+			<standalone_server>
+				<configuration automatic_session_management="true"/>
+				<misc automatic_variables_management="false"/>
+			</standalone_server>
+			<remote>
+				<configuration automatic_session_management="true"/>
+				<misc automatic_variables_management="false"/>
+			</remote>
+		</web>
+		<database>
+			<misc accept_dot_syntax="false" allow_json_dates="false" store_unicode_tokens="false"/>
+		</database>
+		<server>
+			<network>
+				<options use_legacy_network_layer="true"/>
+			</network>
+		</server>
+		<deployment>
+			<options generate_applications_for_read_only_deployment="false"/>
+		</deployment>
+		<compiler>
+			<options error_file="true" fat_binary="true" symbol_file="true"/>
+		</compiler>
+	</com.4d>
+</preferences>
