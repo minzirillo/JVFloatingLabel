@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  4D 21 R4 component build settings.
+  Location: Settings/buildApp.4DSettings (project Settings folder).
+  https://developer.4d.com/docs/21-R4/Desktop/building
+  https://developer.4d.com/docs/21-R4/commands/build-application
+  Keys /Preferences4D/BuildApp/BuildComponent and BuildApplicationName
+  (4D XML Keys BuildApplication). No licence path.
+-->
+<Preferences4D>
+  <BuildApp>
+    <BuildCompiled>False</BuildCompiled>
+    <IncludeAssociatedFolders>True</IncludeAssociatedFolders>
+    <BuildComponent>True</BuildComponent>
+    <BuildApplicationName>JVFloatLabeledTextField</BuildApplicationName>
+  </BuildApp>
+</Preferences4D>

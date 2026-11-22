@@ -7,9 +7,9 @@ Le libellé du placeholder s'affiche au-dessus du champ, en bleu lorsqu'il a le 
 
 The placeholder is drawn above the input: blue while the input has the focus, grey otherwise. With no value, the label is removed and the placeholder stays inside the field. The idea comes from [Matt D. Smith's mock-up](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users), ported to 4D by Maurice Inzirillo (AJAR SA, 2018, MIT licence).
 
-Ce dépôt est le projet matrice pour **4D 21 R4**. La base binaire d'exemple `JVFloatLabeledTextFieldv17 Lab.4dbase` est inchangée : c'est une base v17, pas le projet à ouvrir.
+Ce dépôt est le projet matrice pour **4D 21 R4**. Le laboratoire binaire d'origine et son fichier de génération sont conservés, inchangés, dans [`legacy-v17/`](legacy-v17/). Ce n'est pas le projet à ouvrir avec 4D 21 R4.
 
-This repository is the matrix project for **4D 21 R4**. The binary example `JVFloatLabeledTextFieldv17 Lab.4dbase` is unchanged. It is a v17 database, not the project to open.
+This repository is the matrix project for **4D 21 R4**. The original binary lab and its build file are kept, unchanged, in [`legacy-v17/`](legacy-v17/). That folder is not the project to open with 4D 21 R4.
 
 Une base hôte d'exemple convertie en mode projet 4D 21 R4 se trouve dans [`Example/JVFloatLabeledTextField Lab.4dbase/`](Example/JVFloatLabeledTextField%20Lab.4dbase/). La documentation complète (français et anglais) est dans [`Documentation/`](Documentation/).
 
@@ -19,7 +19,7 @@ A converted 4D 21 R4 project-mode host example is in [`Example/JVFloatLabeledTex
 
 Le fichier à ouvrir est `Project/JVFloatLabeledTextField.4DProject`. Les sources sont dans `Project/Sources/`, conformément à l'[architecture d'un projet](https://developer.4d.com/docs/21-R4/Project/architecture). `compatibilityVersion` reste **2140**.
 
-À la première ouverture, 4D peut demander un fichier de données. Créez-en un nouveau. Le composant ne stocke pas de données. Ne sélectionnez pas le `.4DD` du dossier Lab : 4D peut y écrire des fichiers annexes.
+À la première ouverture, 4D peut demander un fichier de données. Créez-en un nouveau. Le composant ne stocke pas de données. Ne sélectionnez pas le `.4DD` archivé dans [`legacy-v17/`](legacy-v17/) : 4D peut y écrire des fichiers annexes.
 
 `JVFloatLabeledTextField` et `JVF_Licence` sont partagées avec l'hôte (`//%attributes = {"shared":true}`), la case « Partagée entre les composants et le projet hôte ».
 
@@ -46,11 +46,11 @@ Ce dossier `Components` est celui de l'hôte, au même niveau que son dossier `P
 
 Dans l'hôte du Lab, le formulaire `test_Form1` fonctionne avec ce composant interprété.
 
-### Remplacer le composant v17
+### Ancien composant compilé
 
-4D 21 R4 ne charge pas l'ancien composant compilé v17 (fichier `.4DC`). Dans l'hôte Lab, il reste dans `Components/JVFloatLabeledTextFieldv17.4dbase/` et provoque l'erreur **-10508**, « Méthode projet introuvable », sur `JVFloatLabeledTextField`.
+4D 21 R4 ne charge pas l'ancien composant compilé (fichier `.4DC`) conservé dans [`legacy-v17/JVFloatLabeledTextFieldv17 Lab.4dbase/Components/`](legacy-v17/JVFloatLabeledTextFieldv17%20Lab.4dbase/Components/). Cette copie provoque l'erreur **-10508**, « Méthode projet introuvable », sur `JVFloatLabeledTextField`.
 
-Retirez cette copie **de l'hôte que vous exécutez** et mettez le paquet 21 R4 à la place. Le dossier `JVFloatLabeledTextFieldv17 Lab.4dbase` versionné dans ce dépôt ne doit pas être modifié ni supprimé : c'est l'exemple binaire d'origine.
+Retirez cette copie **de l'hôte que vous exécutez** et mettez le paquet 21 R4 à la place. Le dossier archivé dans [`legacy-v17/`](legacy-v17/) ne doit être ni modifié ni supprimé : c'est l'exemple binaire d'origine.
 
 Un hôte compilé ne peut pas utiliser un composant interprété. Il lui faut le `.4DZ` décrit ci-dessous. Voir [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components).
 
@@ -69,15 +69,15 @@ D'après le [générateur d'application](https://developer.4d.com/docs/21-R4/Des
 - `Libraries/lib4d-arm64.dylib`
 - `Resources`
 
-La même génération se lance avec `BUILD APPLICATION` et un fichier `Settings/buildApp.4DSettings` dont la clé `BuildComponent` vaut `True`. 4D crée ce fichier au premier usage du dialogue. Le fichier historique `BuildSettings/BuildApp.xml` est celui de la v17 : il contient un chemin de licence propre à une machine, ne pas le réutiliser.
+La même génération se lance avec `BUILD APPLICATION` et le fichier [`Settings/buildApp.4DSettings`](Settings/buildApp.4DSettings) de ce dépôt (`BuildComponent` = `True`, `BuildApplicationName` = `JVFloatLabeledTextField`). L'ancien fichier [`legacy-v17/BuildSettings/BuildApp.xml`](legacy-v17/BuildSettings/BuildApp.xml) contient un chemin de licence propre à une machine : ne pas le réutiliser.
 
-Installez ensuite le dossier `JVFloatLabeledTextField.4dbase` produit (celui qui contient `Contents`) dans le `Components` de l'hôte, à la place du composant v17.
+Installez ensuite le dossier `JVFloatLabeledTextField.4dbase` produit (celui qui contient `Contents`) dans le `Components` de l'hôte, à la place de l'ancien composant compilé décrit dans [`legacy-v17/`](legacy-v17/).
 
 ## Install in a 4D 21 R4 host
 
 Open `Project/JVFloatLabeledTextField.4DProject`. Sources live in `Project/Sources/`, as described in the [project architecture](https://developer.4d.com/docs/21-R4/Project/architecture). `compatibilityVersion` stays **2140**.
 
-On the first open, 4D may ask for a data file. Create a new one. The component stores no data. Do not select the Lab folder's `.4DD`: 4D may write sidecar files next to it.
+On the first open, 4D may ask for a data file. Create a new one. The component stores no data. Do not select the `.4DD` archived in [`legacy-v17/`](legacy-v17/): 4D may write sidecar files next to it.
 
 `JVFloatLabeledTextField` and `JVF_Licence` are shared with the host (`//%attributes = {"shared":true}`), the "Shared by components and host project" property.
 
@@ -104,11 +104,11 @@ That `Components` folder is the host's, next to its `Project` folder. Components
 
 In the Lab host, form `test_Form1` works with this interpreted component.
 
-### Replace the v17 component
+### Old compiled component
 
-4D 21 R4 does not load the old compiled v17 component (the `.4DC` file). In the Lab host it still sits in `Components/JVFloatLabeledTextFieldv17.4dbase/` and raises error **-10508**, "Méthode projet introuvable", on `JVFloatLabeledTextField`.
+4D 21 R4 does not load the old compiled component (the `.4DC` file) kept in [`legacy-v17/JVFloatLabeledTextFieldv17 Lab.4dbase/Components/`](legacy-v17/JVFloatLabeledTextFieldv17%20Lab.4dbase/Components/). That copy raises error **-10508**, "Méthode projet introuvable", on `JVFloatLabeledTextField`.
 
-Remove that copy **from the host you are running** and put the 21 R4 package in its place. Do not modify or delete the `JVFloatLabeledTextFieldv17 Lab.4dbase` folder stored in this repository: it is the original binary example.
+Remove that copy **from the host you are running** and put the 21 R4 package in its place. Do not modify or delete the folder archived in [`legacy-v17/`](legacy-v17/): it is the original binary example.
 
 A compiled host cannot use an interpreted component. It needs the `.4DZ` below. See [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components).
 
@@ -127,9 +127,9 @@ From the [application builder](https://developer.4d.com/docs/21-R4/Desktop/build
 - `Libraries/lib4d-arm64.dylib`
 - `Resources`
 
-The same build can be launched with `BUILD APPLICATION` and a `Settings/buildApp.4DSettings` file whose `BuildComponent` key is `True`. 4D creates that file the first time you use the dialog. The historical `BuildSettings/BuildApp.xml` is the v17 file: it contains a machine-specific licence path, so do not reuse it.
+The same build can be launched with `BUILD APPLICATION` and this repository's [`Settings/buildApp.4DSettings`](Settings/buildApp.4DSettings) file (`BuildComponent` = `True`, `BuildApplicationName` = `JVFloatLabeledTextField`). The old file [`legacy-v17/BuildSettings/BuildApp.xml`](legacy-v17/BuildSettings/BuildApp.xml) contains a machine-specific licence path: do not reuse it.
 
-Then install the generated `JVFloatLabeledTextField.4dbase` folder (the one that contains `Contents`) into the host's `Components` folder, in place of the v17 component.
+Then install the generated `JVFloatLabeledTextField.4dbase` folder (the one that contains `Contents`) into the host's `Components` folder, in place of the old compiled component described in [`legacy-v17/`](legacy-v17/).
 
 ## Événements et appel
 
@@ -243,6 +243,7 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - La valeur numérique 0 affiche l'étiquette. Un champ SQL NULL la masque.
 - En-tête de licence rétabli (le texte s'arrêtait à « IN CONNE »). Le commentaire « if it's a time » sur la branche numérique disait en réalité « nombre ».
 - `OBJECT DUPLICATE` ne reçoit plus les coordonnées : la syntaxe actuelle place `newVar` et `boundTo` avant elles. La copie est positionnée avec `OBJECT MOVE` en absolu.
+- Le laboratoire binaire est dans `legacy-v17/JVFloatLabeledTextFieldv17 Lab.4dbase/` et l'ancien fichier de génération dans `legacy-v17/BuildSettings/BuildApp.xml` (contenu conservé, rien supprimé). Le fichier de génération 21 R4 est `Settings/buildApp.4DSettings`.
 
 ### 2018 — v17
 
@@ -260,6 +261,7 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - Numeric 0 shows the label. An SQL NULL field hides it.
 - Licence header restored (it stopped at "IN CONNE"). The "if it's a time" comment on the numeric branch now says it is a number.
 - `OBJECT DUPLICATE` no longer receives the coordinates: the current syntax puts `newVar` and `boundTo` before them. The copy is placed with `OBJECT MOVE` in absolute mode.
+- The binary lab is in `legacy-v17/JVFloatLabeledTextFieldv17 Lab.4dbase/` and the old build file is in `legacy-v17/BuildSettings/BuildApp.xml` (content kept, nothing deleted). The 21 R4 build file is `Settings/buildApp.4DSettings`.
 
 ### 2018 — v17
 

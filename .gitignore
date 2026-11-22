@@ -1,3 +1,5 @@
-# ignore user preferences and the cache 4D rebuilds when the project is opened
+# User preferences (any folder, including under legacy-v17/) and the cache 4D rebuilds when a project is opened.
+# Settings/buildApp.4DSettings is the 4D 21 R4 component build file and stays tracked.
+# legacy-v17/ is the original binary lab, kept on purpose; it is not a generated cache.
 userPreferences.*/
 Project/DerivedData/
