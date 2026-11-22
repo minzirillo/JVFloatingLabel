@@ -4,7 +4,9 @@ Base d’exemple **4D 21 R4** (mode projet) pour le composant [JVFloatLabeledTex
 
 Le composant affiche le *placeholder* d’un champ au-dessus de la saisie : bleu au focus, gris sinon. S’il n’y a pas de valeur, l’étiquette disparaît. Idée originale : [maquette de Matt D. Smith](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users). Portage 4D : Maurice Inzirillo, AJAR SA, 2018, licence MIT.
 
-Cette base est la conversion en projet de l’ancien laboratoire binaire v17, renommée sans « v17 ». Le composant **compilé** 21 R4 est déjà dans `Components/JVFloatLabeledTextField.4dbase`.
+Cette base est la conversion en projet de l’ancien laboratoire binaire. Le composant **compilé** 21 R4 est déjà dans `Components/JVFloatLabeledTextField.4dbase`.
+
+**Historique.** La version d’origine 4D v17 est disponible au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
 
 English version: [README.en.md](README.en.md).
 
@@ -19,7 +21,7 @@ Les deux formulaires activent les événements requis par le composant (On Load,
 
 ## Documentation
 
-La documentation complète de la version 21 R4 (présentation, installation, API, intégration, changements par rapport à la v17, reconstruction, limites et licence) se trouve dans :
+La documentation complète de la version 21 R4 (présentation, installation, API, intégration, historique des changements, reconstruction, limites et licence) se trouve dans :
 
 [JVFloatLabeledTextField-21R4.fr.md](JVFloatLabeledTextField-21R4.fr.md)
 

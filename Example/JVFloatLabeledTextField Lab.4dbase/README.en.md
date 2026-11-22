@@ -4,7 +4,9 @@
 
 The component draws the field’s placeholder above the input: blue while the field has the focus, grey otherwise. With no value, the label disappears. Original idea: [Matt D. Smith’s mock-up](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users). 4D port: Maurice Inzirillo, AJAR SA, 2018, MIT licence.
 
-This database is the project-mode conversion of the former v17 binary lab, renamed without “v17”. The **compiled** 21 R4 component is already in `Components/JVFloatLabeledTextField.4dbase`.
+This database is the project-mode conversion of the former binary lab. The **compiled** 21 R4 component is already in `Components/JVFloatLabeledTextField.4dbase`.
+
+**History.** The original 4D v17 version is available at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
 
 Version française : [README.fr.md](README.fr.md).
 
@@ -19,7 +21,7 @@ Both forms enable the events required by the component (On Load, On Getting Focu
 
 ## Documentation
 
-The full 21 R4 documentation (overview, installation, API, form integration, changes from v17, rebuild, limitations and licence) is here:
+The full 21 R4 documentation (overview, installation, API, form integration, change history, rebuild, limitations and licence) is here:
 
 [Documentation/JVFloatLabeledTextField-21R4.en.md](Documentation/JVFloatLabeledTextField-21R4.en.md)
 

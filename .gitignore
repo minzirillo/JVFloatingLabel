@@ -1,3 +1,12 @@
-# ignore user preferences and the cache 4D rebuilds when the project is opened
+# 4D generated data, logs, caches and user preferences (any project folder)
+*.4DD
+*.journal
+*.4DIndy
+*.Match
 userPreferences.*/
-Project/DerivedData/
+Logs/
+DerivedData/
+Data/
+
+# macOS
+.DS_Store
