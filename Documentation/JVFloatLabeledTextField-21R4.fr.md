@@ -2,7 +2,7 @@
 
 Composant 4D : une étiquette flottante au-dessus d’un champ de saisie.
 
-Licence MIT, Maurice Inzirillo, AJAR SA, 2018 (le dialogue de licence indique aussi 2015-2018). L’idée vient de [la maquette de Matt D. Smith](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users), portée en 4D, puis migrée en projet 4D 21 R4. Le laboratoire binaire d’origine est dans `legacy-v17/` (racine du dépôt).
+Licence MIT, Maurice Inzirillo, AJAR SA, 2018 (le dialogue de licence indique aussi 2015-2018). L’idée vient de [la maquette de Matt D. Smith](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users), portée en 4D, puis migrée en projet 4D 21 R4. Historique : la version d’origine 4D v17 est au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
 
 Cette documentation décrit la version **4D 21 R4** (mode projet). Elle s’appuie sur le code des méthodes partagées, sur la base d’exemple convertie et sur les builds du 22 novembre 2026.
 
@@ -42,7 +42,7 @@ Le projet matrice du composant est `Project/JVFloatLabeledTextField.4DProject`. 
 | Couche réseau héritée (hôte) | `use_legacy_network_layer="false"` |
 | Compilation du composant | option `fat_binary="true"` ; cibles utilisées : `x86_64_generic` et `arm64_macOS_lib` |
 
-**4D 21 R4 ne charge pas** l’ancien composant compilé (fichier `.4DC`, archivé dans `legacy-v17/`). Cette tentative produit l’erreur **-10508**. Il faut installer le composant projet 21 R4, interprété ou compilé (`.4DZ`).
+**4D 21 R4 ne charge pas** l’ancien composant compilé (fichier `.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)). Cette tentative produit l’erreur **-10508**. Il faut installer le composant projet 21 R4, interprété ou compilé (`.4DZ`).
 
 La base d’exemple a été convertie par le menu Fichier > Exporter > Structure vers projet. Le journal `Logs/Conversion 2026-11-22T10-30-55.json` indique `"success": true` et l’activation des réglages de compatibilité suivants :
 
@@ -89,7 +89,7 @@ Les builds du 22 novembre 2026 se trouvent dans `JVFloatingLabel-build-2026-11-2
 
 Les builds du 22 novembre 2026 se trouvent dans `JVFloatingLabel-build-2026-11-22/out/Compilé/JVFloatLabeledTextField.4dbase`. C’est cette copie compilée qui est déjà installée dans la base d’exemple documentée ici.
 
-Ne pas laisser côte à côte, dans `Components`, l’ancien paquet compilé (`.4DC`, voir `legacy-v17/`) et le nouveau composant.
+Ne pas laisser côte à côte, dans `Components`, l’ancien paquet compilé (`.4DC`) et le nouveau composant.
 
 ---
 
@@ -240,7 +240,7 @@ Fichier à ouvrir dans 4D 21 R4 :
 
 `Project/JVFloatLabeledTextField Lab.4DProject`
 
-Le dossier `Data/` est vide. Au premier lancement, 4D proposera de créer un fichier de données : en créer un nouveau. Le catalogue porte encore l’ancien nom de paquet du laboratoire d’origine et `data_file_path=":JVFloatLabeledTextField.4DD"`. La base binaire (`.4DB`, `.4DD`, index, journal) est conservée dans `legacy-v17/` (racine du dépôt) et n’est plus à la racine de ce projet. Il n’y a pas de table métier : uniquement des formulaires de test.
+Le dossier `Data/` est vide. Au premier lancement, 4D proposera de créer un fichier de données : en créer un nouveau. Le catalogue porte encore l’ancien nom de paquet et `data_file_path=":JVFloatLabeledTextField.4DD"`. La base binaire d’origine n’est pas dans cette branche : elle est au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). Il n’y a pas de table métier : uniquement des formulaires de test.
 
 Le dossier `Components/JVFloatLabeledTextField.4dbase` contient le **composant compilé** 21 R4.
 
@@ -294,7 +294,7 @@ L’hôte a été compilé avec 4D 21 R4, cibles `x86_64_generic` et `arm64_macO
 - Jetons `:C` / `:K` retirés du composant (`"tokenizedText": false`).
 - Réglage `use_legacy_network_layer` retiré du composant. Celui-ci n’a pas de code client-serveur. La page Compatibilité 21 R4 ne liste plus cette couche : elle a été retirée en 21 R3. Sur l’hôte, l’attribut a été passé à `false`.
 - La base d’exemple binaire a été convertie en mode projet et renommée `JVFloatLabeledTextField Lab` (le « v17 » a été retiré des noms).
-- Le laboratoire binaire d’origine est dans `legacy-v17/JVFloatLabeledTextFieldv17 Lab.4dbase/` et l’ancien fichier de génération dans `legacy-v17/BuildSettings/BuildApp.xml` : déplacés, non supprimés. Le catalogue de l’hôte porte encore `package_name="JVFloatLabeledTextFieldv17 Lab"`.
+- La version d’origine 4D v17 reste dans l’historique, au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). Elle n’est plus dans l’arbre de cette branche. Le catalogue de l’hôte porte encore `package_name="JVFloatLabeledTextFieldv17 Lab"`.
 
 ### Syntaxe et API interne
 
@@ -336,7 +336,7 @@ Les cibles `x86_64_generic` et `arm64_macOS_lib` sont celles documentées pour [
 
 ### 2. Construire le paquet compilé
 
-Après une compilation réussie, appeler [`BUILD APPLICATION`](https://developer.4d.com/docs/21-R4/commands/build-application) avec `Settings/buildApp.4DSettings` à la racine du dépôt du composant. Ne pas réutiliser `legacy-v17/BuildSettings/BuildApp.xml` (chemin de licence local). Le fichier 21 R4 contient au minimum :
+Après une compilation réussie, appeler [`BUILD APPLICATION`](https://developer.4d.com/docs/21-R4/commands/build-application) avec `Settings/buildApp.4DSettings` à la racine du dépôt du composant. N’y copiez pas de chemin de licence. Le fichier contient au minimum :
 
 - `BuildComponent` = `True`
 - `BuildApplicationName` = `JVFloatLabeledTextField`
@@ -362,7 +362,7 @@ Les artefacts de cette reconstruction sont dans `JVFloatingLabel-build-2026-11-2
 - **Client-serveur, Windows, hôte compilé.** Le travail et les essais ont été faits avec 4D 21 R4 sur macOS (MacBook Pro), hôte interprété. Aucun test client-serveur, ni Windows, ni hôte compilé, n’est enregistré ici.
 - **Interface.** Les menus et le changement de couleur au focus sur `test_Form` ont été corrigés dans les sources. Ils n’ont pas été cliqués ni observés dans l’interface 4D (la capture d’écran n’était pas disponible sur la machine). Le composant interprété avait été validé dans l’hôte avant la conversion ; le comportement visuel du paquet compilé, dans cette base projet, n’a pas été confirmé de la même façon.
 - **Signature.** Le `buildApp.4DSettings` utilisé a `MacSignature` à `False`. Le paquet n’est pas signé.
-- **Réglages hérités de l’hôte.** `legacy_print_rendering` et `standard_xpath` n’ont pas été modifiés. Le catalogue référence encore l’ancien nom du laboratoire d’origine (voir `legacy-v17/`) et l’ancien `.4DD`.
+- **Réglages hérités de l’hôte.** `legacy_print_rendering` et `standard_xpath` n’ont pas été modifiés. Le catalogue référence encore l’ancien nom de paquet et l’ancien `.4DD`.
 - **Avertissements du compilateur hôte.** Les sept retypages de `Compiler_Variables` n’empêchent pas la compilation ; ils n’ont pas été nettoyés.
 
 ---

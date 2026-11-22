@@ -2,7 +2,7 @@
 
 A 4D component: a floating label above an input field.
 
-MIT licence, Maurice Inzirillo, AJAR SA, 2018 (the licence dialog also mentions 2015-2018). The idea comes from [Matt D. Smith’s mock-up](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users), ported to 4D, then migrated to a 4D 21 R4 project. The original binary lab is in `legacy-v17/` (repository root).
+MIT licence, Maurice Inzirillo, AJAR SA, 2018 (the licence dialog also mentions 2015-2018). The idea comes from [Matt D. Smith’s mock-up](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users), ported to 4D, then migrated to a 4D 21 R4 project. History: the original 4D v17 version is available at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
 
 This documentation describes the **4D 21 R4** version (project mode). It is based on the shared method source, the converted example database, and the builds of 22 November 2026.
 
@@ -42,7 +42,7 @@ The component matrix project is `Project/JVFloatLabeledTextField.4DProject`. Sou
 | Legacy network layer (host) | `use_legacy_network_layer="false"` |
 | Component compilation | `fat_binary="true"` option; targets used: `x86_64_generic` and `arm64_macOS_lib` |
 
-**4D 21 R4 cannot load** the old compiled component (`.4DC` file, archived in `legacy-v17/`). That attempt produces error **-10508**. Install the 21 R4 project component, interpreted or compiled (`.4DZ`).
+**4D 21 R4 cannot load** the old compiled component (`.4DC` file, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)). That attempt produces error **-10508**. Install the 21 R4 project component, interpreted or compiled (`.4DZ`).
 
 The example database was converted with File > Export > Structure to project. The log `Logs/Conversion 2026-11-22T10-30-55.json` reports `"success": true` and the following compatibility settings switched on:
 
@@ -89,7 +89,7 @@ The 22 November 2026 builds are in `JVFloatingLabel-build-2026-11-22/out/Interpr
 
 The 22 November 2026 builds are in `JVFloatingLabel-build-2026-11-22/out/Compilé/JVFloatLabeledTextField.4dbase`. That compiled copy is already installed in the example database documented here.
 
-Do not leave the old compiled package (`.4DC`, see `legacy-v17/`) and the new component side by side in `Components`.
+Do not leave the old compiled package (`.4DC`) and the new component side by side in `Components`.
 
 ---
 
@@ -240,7 +240,7 @@ File to open in 4D 21 R4:
 
 `Project/JVFloatLabeledTextField Lab.4DProject`
 
-The `Data/` folder is empty. On the first launch, 4D will offer to create a data file: create a new one. The catalog still has the original lab package name and `data_file_path=":JVFloatLabeledTextField.4DD"`. The binary database (`.4DB`, `.4DD`, index, journal) is kept in `legacy-v17/` (repository root) and is no longer at the root of this project. There is no business table: only test forms.
+The `Data/` folder is empty. On the first launch, 4D will offer to create a data file: create a new one. The catalog still has the original package name and `data_file_path=":JVFloatLabeledTextField.4DD"`. The original binary database is not in this branch: it is at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). There is no business table: only test forms.
 
 The `Components/JVFloatLabeledTextField.4dbase` folder holds the **compiled** 21 R4 component.
 
@@ -294,7 +294,7 @@ The host was compiled with 4D 21 R4, targets `x86_64_generic` and `arm64_macOS_l
 - `:C` / `:K` tokens removed from the component (`"tokenizedText": false`).
 - The `use_legacy_network_layer` setting was removed from the component. The component has no client/server code. The 21 R4 Compatibility page no longer lists that layer: it was removed in 21 R3. On the host, the attribute was set to `false`.
 - The binary example database was converted to project mode and renamed `JVFloatLabeledTextField Lab` (“v17” was removed from the names).
-- The original binary lab is in `legacy-v17/JVFloatLabeledTextFieldv17 Lab.4dbase/` and the old build file is in `legacy-v17/BuildSettings/BuildApp.xml`: moved, not deleted. The host catalog still has `package_name="JVFloatLabeledTextFieldv17 Lab"`.
+- The original 4D v17 version stays in history, at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). It is no longer in this branch's tree. The host catalog still has `package_name="JVFloatLabeledTextFieldv17 Lab"`.
 
 ### Syntax and internal API
 
@@ -336,7 +336,7 @@ The `x86_64_generic` and `arm64_macOS_lib` targets are those documented for [`Co
 
 ### 2. Build the compiled package
 
-After a successful compilation, call [`BUILD APPLICATION`](https://developer.4d.com/docs/21-R4/commands/build-application) with `Settings/buildApp.4DSettings` at the component repository root. Do not reuse `legacy-v17/BuildSettings/BuildApp.xml` (it contains a local licence path). The 21 R4 file contains at least:
+After a successful compilation, call [`BUILD APPLICATION`](https://developer.4d.com/docs/21-R4/commands/build-application) with `Settings/buildApp.4DSettings` at the component repository root. Do not copy a licence path into it. The file contains at least:
 
 - `BuildComponent` = `True`
 - `BuildApplicationName` = `JVFloatLabeledTextField`
@@ -362,7 +362,7 @@ The artefacts of this rebuild are in `JVFloatingLabel-build-2026-11-22/out/` (`C
 - **Client/server, Windows, compiled host.** The work and tests were done with 4D 21 R4 on macOS (MacBook Pro), interpreted host. No client/server, Windows, or compiled-host test is recorded here.
 - **User interface.** The menus and the focus colour change on `test_Form` were fixed in the sources. They were not clicked or observed in the 4D interface (screen capture was not available on the machine). The interpreted component had been validated in the host before conversion; the visual behaviour of the compiled package, in this project database, has not been confirmed in the same way.
 - **Signature.** The `buildApp.4DSettings` file used has `MacSignature` set to `False`. The package is not signed.
-- **Inherited host settings.** `legacy_print_rendering` and `standard_xpath` were left unchanged. The catalog still references the original lab name (see `legacy-v17/`) and the old `.4DD`.
+- **Inherited host settings.** `legacy_print_rendering` and `standard_xpath` were left unchanged. The catalog still references the original package name and the old `.4DD`.
 - **Host compiler warnings.** The seven retyping warnings in `Compiler_Variables` do not prevent compilation; they have not been cleaned up.
 
 ---
