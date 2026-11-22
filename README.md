@@ -35,7 +35,13 @@ Le nom déclaré est `JVFloatLabeledTextField`, celui du fichier `.4DProject`. I
 
 Les méthodes objet de `test_Form` et de `test_Form1` appellent `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (jetons `:C1124` et `:K67:2` dans les sources de l'hôte). Sans composant chargé, le nom seul est une variable : erreur 37, « Il manque le signe d'affectation (:=) ».
 
-Un dossier `Components` de l'hôte reste prioritaire ([Priority](https://developer.4d.com/docs/21-R4/Project/components#priority)). N'y placez pas l'ancien composant compilé (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
+`test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Un clone s'exécute ainsi : la dépendance pointe vers les sources du composant.
+
+Compiler l'hôte tant que cette dépendance pointe vers les sources échoue avec : « Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence') ». Un hôte compilé ne charge pas un composant interprété.
+
+Pour compiler l'hôte, produire le composant compilé (`.4DZ`, voir [Reconstruction](Documentation/JVFloatLabeledTextField-21R4.fr.md#reconstruction)) et l'installer dans `Example/JVFloatLabeledTextField Lab.4dbase/Components/JVFloatLabeledTextField.4dbase/` (le dossier qui contient `Contents/`). On peut aussi retirer la dépendance, ou faire pointer `environment4d.json` vers ce paquet compilé au lieu des sources.
+
+[Priority](https://developer.4d.com/docs/21-R4/Project/components#priority) classe les emplacements du plus prioritaire au moins prioritaire : 1. le dossier `Components` de l'hôte ; 2. le composant déclaré dans `dependencies.json` (le chemin de `environment4d.json` remplace celui de `dependencies.json`) ; 3. les composants internes de 4D. Le dossier `Components` gagne. Le composant qui s'y trouve est chargé (statut Overloading) ; la dépendance du même nom n'est pas chargée (statut Overloaded). N'y placez pas l'ancien composant compilé (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
 
 ## Open the example from a clone
 
@@ -53,7 +59,13 @@ The declared name is `JVFloatLabeledTextField`, the `.4DProject` file name. It d
 
 Object methods on `test_Form` and `test_Form1` call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (tokens `:C1124` and `:K67:2` in the host sources). With no component loaded, a bare name is a variable: error 37, "Il manque le signe d'affectation (:=)".
 
-A host `Components` folder still has priority ([Priority](https://developer.4d.com/docs/21-R4/Project/components#priority)). Do not put the old compiled component there (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
+`test_Form` and `test_Form1` were validated in interpreted mode with 4D 21 R4 on macOS. A clone runs that way: the dependency points at the component sources.
+
+Compiling the host while that dependency points at the sources fails with: "Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence')". A compiled host cannot load this interpreted component.
+
+To compile the host, build the compiled component (`.4DZ`, see [Rebuild](Documentation/JVFloatLabeledTextField-21R4.en.md#rebuild)) and install it in `Example/JVFloatLabeledTextField Lab.4dbase/Components/JVFloatLabeledTextField.4dbase/` (the folder that contains `Contents/`). You can also remove the dependency, or point `environment4d.json` at that compiled package instead of the sources.
+
+[Priority](https://developer.4d.com/docs/21-R4/Project/components#priority) orders locations from highest to lowest: 1. the host `Components` folder; 2. the component declared in `dependencies.json` (the `environment4d.json` path overrides the `dependencies.json` path); 3. internal 4D components. The `Components` folder wins. The component stored there is loaded (Overloading); the dependency of the same name is not loaded (Overloaded). Do not put the old compiled component there (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
 
 ## Installation dans un hôte 4D 21 R4
 
@@ -285,6 +297,7 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - `OBJECT DUPLICATE` ne reçoit plus les coordonnées : la syntaxe actuelle place `newVar` et `boundTo` avant elles. La copie est positionnée avec `OBJECT MOVE` en absolu.
 - La version d'origine 4D v17 reste dans l'historique, au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). Elle n'est plus dans l'arbre de cette branche. Le fichier de génération 21 R4 est `Settings/buildApp.4DSettings`.
 - L'exemple charge le projet matrice par `dependencies.json` et `environment4d.json` (chemin `../..`). Les méthodes objet de `test_Form` passent `OBJECT Get pointer(Object current)`, comme `test_Form1`. Cela corrige l'erreur 37 sur un clone sans dossier `Components`.
+- `test_Form` et `test_Form1` validés en interprété, 4D 21 R4, macOS. La compilation de l'hôte échoue tant que la dépendance pointe vers les sources : il faut le `.4DZ` dans `Components`, qui prime sur la dépendance.
 
 ### 2018 — v17
 
@@ -304,6 +317,7 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - `OBJECT DUPLICATE` no longer receives the coordinates: the current syntax puts `newVar` and `boundTo` before them. The copy is placed with `OBJECT MOVE` in absolute mode.
 - The original 4D v17 version stays in history, at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). It is no longer in this branch's tree. The 21 R4 build file is `Settings/buildApp.4DSettings`.
 - The example loads the matrix project through `dependencies.json` and `environment4d.json` (path `../..`). `test_Form` object methods pass `OBJECT Get pointer(Object current)`, as `test_Form1` does. This fixes error 37 on a clone that has no `Components` folder.
+- `test_Form` and `test_Form1` validated interpreted, 4D 21 R4, macOS. Compiling the host fails while the dependency points at the sources: the host needs the `.4DZ` in `Components`, which takes priority over the dependency.
 
 ### 2018 — v17
 

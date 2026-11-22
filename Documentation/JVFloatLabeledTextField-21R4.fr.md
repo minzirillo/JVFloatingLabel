@@ -250,7 +250,19 @@ Le suffixe `.4dbase` est requis pour installer un composant interprété dans le
 
 Le nom de la dépendance est celui du fichier projet, `JVFloatLabeledTextField`, pas le nom du dossier dans lequel le dépôt est cloné.
 
-Un composant du dossier `Components` de l’hôte reste prioritaire sur cette déclaration ([Priority](https://developer.4d.com/docs/21-R4/Project/components#priority)). N’y laissez pas l’ancien paquet compilé (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
+`test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Un clone s’exécute ainsi : la dépendance pointe vers les sources du composant.
+
+Compiler l’hôte tant que cette dépendance pointe vers les sources échoue avec : « Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence') ». Un hôte compilé ne charge pas un composant interprété.
+
+Pour compiler l’hôte, produire le composant compilé (`.4DZ`, voir [Reconstruction](#reconstruction)) et l’installer dans `Example/JVFloatLabeledTextField Lab.4dbase/Components/JVFloatLabeledTextField.4dbase/` (le dossier qui contient `Contents/`). On peut aussi retirer la dépendance, ou faire pointer `environment4d.json` vers ce paquet compilé au lieu des sources.
+
+[Priority](https://developer.4d.com/docs/21-R4/Project/components#priority) classe les emplacements du plus prioritaire au moins prioritaire :
+
+1. le dossier `Components` du projet hôte ;
+2. le composant déclaré dans `dependencies.json` (le chemin de `environment4d.json` remplace celui de `dependencies.json`) ;
+3. les composants internes de 4D (4D NetKit, 4D SVG, etc.).
+
+Le dossier `Components` gagne. Le composant qui s’y trouve est chargé (statut Overloading). La dépendance du même nom n’est pas chargée (statut Overloaded). Le paquet compilé installé à l’emplacement ci-dessus est donc celui qu’utilise un hôte compilé. N’y placez pas l’ancien paquet compilé (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
 
 ### Formulaires
 
@@ -370,8 +382,9 @@ Les artefacts de cette reconstruction sont dans `JVFloatingLabel-build-2026-11-2
 - **Champs de table et SQL NULL.** Les formulaires d’exemple n’utilisent que des variables processus, pas des champs de table. La branche `Is field value Null` n’a pas été exercée dans cette base.
 - **Heure 00:00:00.** Minuit et une heure « vide » sont indistinguables ; l’étiquette est masquée dans les deux cas.
 - **Valeur numérique 0.** Après validation, un nombre effacé redevient 0 et l’étiquette réapparaît.
-- **Client-serveur, Windows, hôte compilé.** Le travail et les essais ont été faits avec 4D 21 R4 sur macOS (MacBook Pro), hôte interprété. Aucun test client-serveur, ni Windows, ni hôte compilé, n’est enregistré ici.
-- **Interface.** Les menus et le changement de couleur au focus sur `test_Form` ont été corrigés dans les sources. Ils n’ont pas été cliqués ni observés dans l’interface 4D (la capture d’écran n’était pas disponible sur la machine). Le composant interprété avait été validé dans l’hôte avant la conversion ; le comportement visuel du paquet compilé, dans cette base projet, n’a pas été confirmé de la même façon.
+- **Client-serveur et Windows.** Aucun test client-serveur ni Windows n’est enregistré ici.
+- **Hôte compilé.** `test_Form` et `test_Form1` ont été validés en interprété, 4D 21 R4, macOS. La compilation headless de l’hôte, avec la dépendance vers les sources, échoue : « Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence') ». Voir [Base d’exemple](#base-dexemple).
+- **Interface.** `test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Le comportement visuel du paquet compilé, dans cette base projet, n’a pas été confirmé de la même façon.
 - **Signature.** Le `buildApp.4DSettings` utilisé a `MacSignature` à `False`. Le paquet n’est pas signé.
 - **Réglages hérités de l’hôte.** `legacy_print_rendering` et `standard_xpath` n’ont pas été modifiés. Le catalogue référence encore l’ancien `.4DD`.
 - **Avertissements du compilateur hôte.** Les sept retypages de `Compiler_Variables` n’empêchent pas la compilation ; ils n’ont pas été nettoyés.

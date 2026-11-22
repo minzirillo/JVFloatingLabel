@@ -250,7 +250,19 @@ The `.4dbase` suffix is required to install an interpreted component in the host
 
 The dependency name is the project file name, `JVFloatLabeledTextField`, not the name of the folder the repository was cloned into.
 
-A component in the host's `Components` folder still has priority over this declaration ([Priority](https://developer.4d.com/docs/21-R4/Project/components#priority)). Do not leave the old compiled package there (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
+`test_Form` and `test_Form1` were validated in interpreted mode with 4D 21 R4 on macOS. A clone runs that way: the dependency points at the component sources.
+
+Compiling the host while that dependency points at the sources fails with: "Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence')". A compiled host cannot load this interpreted component.
+
+To compile the host, build the compiled component (`.4DZ`, see [Rebuild](#rebuild)) and install it in `Example/JVFloatLabeledTextField Lab.4dbase/Components/JVFloatLabeledTextField.4dbase/` (the folder that contains `Contents/`). You can also remove the dependency, or point `environment4d.json` at that compiled package instead of the sources.
+
+[Priority](https://developer.4d.com/docs/21-R4/Project/components#priority) orders locations from highest to lowest:
+
+1. the host project's `Components` folder;
+2. the component declared in `dependencies.json` (the `environment4d.json` path overrides the `dependencies.json` path);
+3. internal 4D components (4D NetKit, 4D SVG, and so on).
+
+The `Components` folder wins. The component stored there is loaded (Overloading). The dependency of the same name is not loaded (Overloaded). The compiled package installed at the path above is therefore the one a compiled host uses. Do not put the old compiled package there (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
 
 ### Forms
 
@@ -370,8 +382,9 @@ The artefacts of this rebuild are in `JVFloatingLabel-build-2026-11-22/out/` (`C
 - **Table fields and SQL NULL.** The example forms only use process variables, not table fields. The `Is field value Null` branch was not exercised in this database.
 - **Time 00:00:00.** Midnight and an “empty” time are indistinguishable; the label is hidden in both cases.
 - **Numeric value 0.** After validation, a cleared number becomes 0 again and the label reappears.
-- **Client/server, Windows, compiled host.** The work and tests were done with 4D 21 R4 on macOS (MacBook Pro), interpreted host. No client/server, Windows, or compiled-host test is recorded here.
-- **User interface.** The menus and the focus colour change on `test_Form` were fixed in the sources. They were not clicked or observed in the 4D interface (screen capture was not available on the machine). The interpreted component had been validated in the host before conversion; the visual behaviour of the compiled package, in this project database, has not been confirmed in the same way.
+- **Client/server and Windows.** No client/server or Windows test is recorded here.
+- **Compiled host.** `test_Form` and `test_Form1` were validated interpreted, 4D 21 R4, macOS. A headless compile of the host, with the dependency pointing at the sources, fails: "Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence')". See [Example database](#example-database).
+- **User interface.** `test_Form` and `test_Form1` were validated in interpreted mode with 4D 21 R4 on macOS. The visual behaviour of the compiled package, in this project database, has not been confirmed in the same way.
 - **Signature.** The `buildApp.4DSettings` file used has `MacSignature` set to `False`. The package is not signed.
 - **Inherited host settings.** `legacy_print_rendering` and `standard_xpath` were left unchanged. The catalog still references the old `.4DD`.
 - **Host compiler warnings.** The seven retyping warnings in `Compiler_Variables` do not prevent compilation; they have not been cleaned up.
