@@ -65,7 +65,7 @@ Le fichier modifié est `Project/Sources/settings.4DSettings` (réglages de stru
 
 ## Installation
 
-Un composant interprété est un projet 4D dont le dossier porte le suffixe `.4dbase` et contient le dossier `Project`. Un composant compilé est un paquet `.4dbase/Contents/` contenant le `.4DZ`, `Info.plist`, `Libraries` et `Resources`. Voir [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components) et [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
+Un composant interprété installé dans le dossier `Components` est un projet 4D dont le dossier porte le suffixe `.4dbase` et contient le dossier `Project`. Déclaré dans `dependencies.json`, le chemin peut viser le dossier racine du projet (celui qui contient `Project/` et le `.4DProject`), sans ce suffixe. Un composant compilé est un paquet `.4dbase/Contents/` contenant le `.4DZ`, `Info.plist`, `Libraries` et `Resources`. Voir [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components) et [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
 
 Les composants placés dans le dossier `Components` de l’hôte (au même niveau que son dossier `Project`) sont chargés en priorité. On peut aussi les déclarer dans `dependencies.json` de l’hôte. Hors de `Components`, le chemin se déclare dans `environment4d.json`.
 
@@ -87,7 +87,7 @@ Les builds du 22 novembre 2026 se trouvent dans `JVFloatingLabel-build-2026-11-2
 2. Le copier dans le dossier `Components` du projet hôte.
 3. Rouvrir l’hôte.
 
-Les builds du 22 novembre 2026 se trouvent dans `JVFloatingLabel-build-2026-11-22/out/Compilé/JVFloatLabeledTextField.4dbase`. C’est cette copie compilée qui est déjà installée dans la base d’exemple documentée ici.
+Les builds du 22 novembre 2026 se trouvent dans `JVFloatingLabel-build-2026-11-22/out/Compilé/JVFloatLabeledTextField.4dbase`. La base d’exemple de ce dépôt ne livre pas cette copie : elle charge le projet matrice par `dependencies.json` et `environment4d.json` (voir [Base d’exemple](#base-dexemple)).
 
 Ne pas laisser côte à côte, dans `Components`, l’ancien paquet compilé (`.4DC`) et le nouveau composant.
 
@@ -232,17 +232,25 @@ Pendant la saisie, c’est `Get edited text` qui décide, y compris pour un nomb
 
 ## Base d’exemple
 
-La base hôte convertie en mode projet se trouve ici :
+Dans ce dépôt, ouvrez avec 4D 21 R4 :
 
-`/Users/maurice/Desktop/JVFloatLabeledTextField-Lab-projet-2026-11-22/JVFloatLabeledTextField Lab.4dbase/`
+`Example/JVFloatLabeledTextField Lab.4dbase/Project/JVFloatLabeledTextField Lab.4DProject`
 
-Fichier à ouvrir dans 4D 21 R4 :
-
-`Project/JVFloatLabeledTextField Lab.4DProject`
+La conversion du 22 novembre 2026 a été faite depuis `/Users/maurice/Desktop/JVFloatLabeledTextField-Lab-projet-2026-11-22/JVFloatLabeledTextField Lab.4dbase/`. Ce chemin n’est pas celui d’un clone.
 
 Le dossier `Data/` est vide. Au premier lancement, 4D proposera de créer un fichier de données : en créer un nouveau. Le catalogue porte encore `data_file_path=":JVFloatLabeledTextField.4DD"`. La base binaire d’origine n’est pas dans cette branche : elle est au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). Il n’y a pas de table métier : uniquement des formulaires de test.
 
-Le dossier `Components/JVFloatLabeledTextField.4dbase` contient le **composant compilé** 21 R4.
+Un clone n’a pas de dossier `Components`. L’exemple charge le projet matrice interprété, à la racine du dépôt (`Project/JVFloatLabeledTextField.4DProject`), par le mécanisme de dépendances de 4D 21 R4.
+
+- `Example/JVFloatLabeledTextField Lab.4dbase/Project/Sources/dependencies.json` déclare le composant `JVFloatLabeledTextField` avec un objet vide. Voir [dependencies.json](https://developer.4d.com/docs/21-R4/Project/components#dependenciesjson), dans [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
+- `Example/JVFloatLabeledTextField Lab.4dbase/environment4d.json` contient `"JVFloatLabeledTextField": "../.."`. Les chemins sont en syntaxe POSIX et les chemins relatifs partent du fichier `environment4d.json` ([Relative paths vs absolute paths](https://developer.4d.com/docs/21-R4/Project/components#relative-paths-vs-absolute-paths)). Le fichier peut être dans le dossier paquet du projet ou dans un parent ([environment4d.json](https://developer.4d.com/docs/21-R4/Project/components#environment4djson)).
+- `../..` désigne la racine du dépôt. C’est le dossier racine du projet composant : il contient `Project/JVFloatLabeledTextField.4DProject`.
+
+Le suffixe `.4dbase` est requis pour installer un composant interprété dans le dossier `Components` de l’hôte ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). Hors de ce dossier, 4D cherche « the component's package folder (i.e. the project root folder of the component) » ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). L’ajout d’une dépendance locale accepte un fichier `.4DZ` ou `.4DProject` ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). La racine du dépôt est ce dossier racine. Elle est à deux niveaux au-dessus de `environment4d.json`, dans la portée d’un chemin relatif ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components) : « within no more than two levels above »).
+
+Le nom de la dépendance est celui du fichier projet, `JVFloatLabeledTextField`, pas le nom du dossier dans lequel le dépôt est cloné.
+
+Un composant du dossier `Components` de l’hôte reste prioritaire sur cette déclaration ([Priority](https://developer.4d.com/docs/21-R4/Project/components#priority)). N’y laissez pas l’ancien paquet compilé (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
 
 ### Formulaires
 
@@ -250,10 +258,12 @@ Deux formulaires projet, tous deux avec un modèle `JVF_obj`, un bouton **Reset 
 
 | Formulaire | Rôle | Appel du composant | Événements des champs | Variables |
 | --- | --- | --- | --- | --- |
-| `test_Form` | variante « large » (classe CSS `Field1`, hauteur de saisie 34, modèle `JVF_obj` en classe `JVFloatLabeledTextField`, 10 pt) | `JVFloatLabeledTextField` sans paramètre | `onLoad`, `onClick`, `onLosingFocus`, `onGettingFocus`, `onDataChange`, `onAfterEdit` | pas de `dataSource` dans le formulaire : variables liées au nom de l’objet, interrogées via `OBJECT Get pointer(Object named; …)` |
+| `test_Form` | variante « large » (classe CSS `Field1`, hauteur de saisie 34, modèle `JVF_obj` en classe `JVFloatLabeledTextField`, 10 pt) | `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` | `onLoad`, `onClick`, `onLosingFocus`, `onGettingFocus`, `onDataChange`, `onAfterEdit` | pas de `dataSource` dans le formulaire : variables liées au nom de l’objet, interrogées via `OBJECT Get pointer(Object named; …)` |
 | `test_Form1` | variante « petite » (classe `Field2`, hauteur 15, modèle en classe `JVFloatLabeledTextField_min`, 8 pt) | `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` | identiques à `test_Form` | `Title`, `Price` (nombre), `Specific_location`, `vDate` (date), `vTime` (heure, format `hh_mm_ss`), `Description` |
 
 Champs des deux formulaires et leurs placeholders : `Title_obj` (Title), `Price_obj` (Price), `Sp_locat_obj` (Specific Location (optional)), `Date_obj` (Birthday), `Time_obj` (Birthday time (optional)), `Description_obj` (Description).
+
+Dans les sources de l’hôte, l’appel des deux formulaires est `JVFloatLabeledTextField(OBJECT Get pointer:C1124(Object current:K67:2))`. Le paramètre reste optionnel dans la méthode du composant (`#DECLARE`) : s’il est omis ou nil, elle utilise `OBJECT Get pointer(Object current)`. Les formulaires le passent pour que la ligne soit un appel de méthode. Sans composant chargé, le nom seul est analysé comme une variable (erreur 37, « Il manque le signe d’affectation (:=) »).
 
 Les événements objet de `test_Form` ont été alignés sur ceux de `test_Form1`, afin que le changement de couleur au focus et au blur fonctionne aussi sur la variante large.
 
@@ -317,6 +327,7 @@ L’hôte a été compilé avec 4D 21 R4, cibles `x86_64_generic` et `arm64_macO
 - Événements On Getting Focus et On Losing Focus (plus On Click et On Data Change) activés sur les champs de `test_Form`, comme dans `test_Form1`.
 - Menu Fichier relié aux méthodes `Open_test_Form` et `Open_test_Form1`.
 - `use_legacy_network_layer="false"` ; `accept_dot_syntax` et `store_unicode_tokens` écrits explicitement dans les réglages de l’hôte.
+- Méthodes objet de `test_Form` alignées sur `test_Form1` : `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. Dépendance locale vers la racine du dépôt (`dependencies.json`, `environment4d.json`, chemin `../..`), pour qu’un clone sans dossier `Components` charge le composant.
 
 ---
 

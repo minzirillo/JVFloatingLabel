@@ -4,7 +4,13 @@
 
 The component draws the field’s placeholder above the input: blue while the field has the focus, grey otherwise. With no value, the label disappears. Original idea: [Matt D. Smith’s mock-up](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users). 4D port: Maurice Inzirillo, AJAR SA, 2018, MIT licence.
 
-This database is the project-mode conversion of the former binary lab. The **compiled** 21 R4 component is already in `Components/JVFloatLabeledTextField.4dbase`.
+This database is the project-mode conversion of the former binary lab. A clone has no `Components` folder: the example loads the repository’s matrix project (`Project/JVFloatLabeledTextField.4DProject`), interpreted.
+
+The component is declared in `Project/Sources/dependencies.json` (name `JVFloatLabeledTextField`, empty object: [dependencies.json](https://developer.4d.com/docs/21-R4/Project/components#dependenciesjson)). The path is in `environment4d.json`, at the root of this package: `../..`. Relative paths start from that file ([Relative paths vs absolute paths](https://developer.4d.com/docs/21-R4/Project/components#relative-paths-vs-absolute-paths)); the file may live in the package folder ([environment4d.json](https://developer.4d.com/docs/21-R4/Project/components#environment4djson)). `../..` is the repository root, the matrix project’s root folder.
+
+The `.4dbase` suffix is required only for a copy in the host’s `Components` folder ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). A local dependency points at “the project root folder of the component” ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). Adding a dependency accepts a `.4DZ` or a `.4DProject` ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). Two levels above the file stay inside the relative-path range ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components)).
+
+Object methods on `test_Form` and `test_Form1` call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (tokens `:C1124` and `:K67:2` in the sources). With no component loaded, the bare name raises error 37. A host `Components` folder would still have priority ([Priority](https://developer.4d.com/docs/21-R4/Project/components#priority)).
 
 **History.** The original 4D v17 version is available at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
 

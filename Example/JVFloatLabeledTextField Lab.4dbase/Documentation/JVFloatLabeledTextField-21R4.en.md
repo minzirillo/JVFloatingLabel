@@ -65,7 +65,7 @@ The file that was edited is `Project/Sources/settings.4DSettings` (structure set
 
 ## Installation
 
-An interpreted component is a 4D project whose folder name ends with `.4dbase` and which contains the `Project` folder. A compiled component is a `.4dbase/Contents/` package containing the `.4DZ`, `Info.plist`, `Libraries` and `Resources`. See [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components) and [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
+An interpreted component installed in the `Components` folder is a 4D project whose folder name ends with `.4dbase` and which contains the `Project` folder. Declared in `dependencies.json`, the path may point at the project root folder (the folder that contains `Project/` and the `.4DProject` file), without that suffix. A compiled component is a `.4dbase/Contents/` package containing the `.4DZ`, `Info.plist`, `Libraries` and `Resources`. See [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components) and [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
 
 Components placed in the host’s `Components` folder (next to its `Project` folder) are loaded first. They can also be declared in the host’s `dependencies.json`. Outside `Components`, the path is declared in `environment4d.json`.
 
@@ -87,7 +87,7 @@ The 22 November 2026 builds are in `JVFloatingLabel-build-2026-11-22/out/Interpr
 2. Copy it into the host project’s `Components` folder.
 3. Reopen the host.
 
-The 22 November 2026 builds are in `JVFloatingLabel-build-2026-11-22/out/Compilé/JVFloatLabeledTextField.4dbase`. That compiled copy is already installed in the example database documented here.
+The 22 November 2026 builds are in `JVFloatingLabel-build-2026-11-22/out/Compilé/JVFloatLabeledTextField.4dbase`. The example database in this repository does not ship that copy: it loads the matrix project through `dependencies.json` and `environment4d.json` (see [Example database](#example-database)).
 
 Do not leave the old compiled package (`.4DC`) and the new component side by side in `Components`.
 
@@ -232,17 +232,25 @@ During input, `Get edited text` decides, including for a number: while the edite
 
 ## Example database
 
-The host database converted to project mode is here:
+In this repository, open with 4D 21 R4:
 
-`/Users/maurice/Desktop/JVFloatLabeledTextField-Lab-projet-2026-11-22/JVFloatLabeledTextField Lab.4dbase/`
+`Example/JVFloatLabeledTextField Lab.4dbase/Project/JVFloatLabeledTextField Lab.4DProject`
 
-File to open in 4D 21 R4:
-
-`Project/JVFloatLabeledTextField Lab.4DProject`
+The 22 November 2026 conversion was done from `/Users/maurice/Desktop/JVFloatLabeledTextField-Lab-projet-2026-11-22/JVFloatLabeledTextField Lab.4dbase/`. That path is not the path of a clone.
 
 The `Data/` folder is empty. On the first launch, 4D will offer to create a data file: create a new one. The catalog still has `data_file_path=":JVFloatLabeledTextField.4DD"`. The original binary database is not in this branch: it is at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). There is no business table: only test forms.
 
-The `Components/JVFloatLabeledTextField.4dbase` folder holds the **compiled** 21 R4 component.
+A clone has no `Components` folder. The example loads the interpreted matrix project, at the repository root (`Project/JVFloatLabeledTextField.4DProject`), through the 4D 21 R4 dependency mechanism.
+
+- `Example/JVFloatLabeledTextField Lab.4dbase/Project/Sources/dependencies.json` declares the `JVFloatLabeledTextField` component with an empty object. See [dependencies.json](https://developer.4d.com/docs/21-R4/Project/components#dependenciesjson), in [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
+- `Example/JVFloatLabeledTextField Lab.4dbase/environment4d.json` contains `"JVFloatLabeledTextField": "../.."`. Paths use POSIX syntax, and relative paths are resolved from the `environment4d.json` file ([Relative paths vs absolute paths](https://developer.4d.com/docs/21-R4/Project/components#relative-paths-vs-absolute-paths)). The file may live in the project package folder or in a parent ([environment4d.json](https://developer.4d.com/docs/21-R4/Project/components#environment4djson)).
+- `../..` is the repository root. That is the component's project root folder: it contains `Project/JVFloatLabeledTextField.4DProject`.
+
+The `.4dbase` suffix is required to install an interpreted component in the host's `Components` folder ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). Outside that folder, 4D looks for "the component's package folder (i.e. the project root folder of the component)" ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). Adding a local dependency accepts a `.4DZ` or a `.4DProject` file ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). This repository's root is that project root folder. It sits two levels above `environment4d.json`, inside the relative-path range ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components): "within no more than two levels above").
+
+The dependency name is the project file name, `JVFloatLabeledTextField`, not the name of the folder the repository was cloned into.
+
+A component in the host's `Components` folder still has priority over this declaration ([Priority](https://developer.4d.com/docs/21-R4/Project/components#priority)). Do not leave the old compiled package there (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
 
 ### Forms
 
@@ -250,10 +258,12 @@ Two project forms, both with a `JVF_obj` template, a **Reset all** button (`Rese
 
 | Form | Role | Component call | Field events | Variables |
 | --- | --- | --- | --- | --- |
-| `test_Form` | “large” variant (CSS class `Field1`, input height 34, `JVF_obj` template with class `JVFloatLabeledTextField`, 10 pt) | `JVFloatLabeledTextField` with no parameter | `onLoad`, `onClick`, `onLosingFocus`, `onGettingFocus`, `onDataChange`, `onAfterEdit` | no `dataSource` in the form: variables tied to the object name, read with `OBJECT Get pointer(Object named; …)` |
+| `test_Form` | “large” variant (CSS class `Field1`, input height 34, `JVF_obj` template with class `JVFloatLabeledTextField`, 10 pt) | `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` | `onLoad`, `onClick`, `onLosingFocus`, `onGettingFocus`, `onDataChange`, `onAfterEdit` | no `dataSource` in the form: variables tied to the object name, read with `OBJECT Get pointer(Object named; …)` |
 | `test_Form1` | “small” variant (class `Field2`, height 15, template class `JVFloatLabeledTextField_min`, 8 pt) | `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` | same as `test_Form` | `Title`, `Price` (number), `Specific_location`, `vDate` (date), `vTime` (time, format `hh_mm_ss`), `Description` |
 
 Fields on both forms and their placeholders: `Title_obj` (Title), `Price_obj` (Price), `Sp_locat_obj` (Specific Location (optional)), `Date_obj` (Birthday), `Time_obj` (Birthday time (optional)), `Description_obj` (Description).
+
+In the host sources, both forms call `JVFloatLabeledTextField(OBJECT Get pointer:C1124(Object current:K67:2))`. The parameter stays optional in the component method (`#DECLARE`): when it is omitted or nil, the method uses `OBJECT Get pointer(Object current)`. The forms pass it so the line is a method call. With no component loaded, a bare name is parsed as a variable (error 37, "Il manque le signe d'affectation (:=)").
 
 Object events on `test_Form` were aligned with those on `test_Form1`, so the colour change on focus and blur also works on the large variant.
 
@@ -317,6 +327,7 @@ The host was compiled with 4D 21 R4, targets `x86_64_generic` and `arm64_macOS_l
 - On Getting Focus and On Losing Focus (plus On Click and On Data Change) enabled on the `test_Form` fields, as in `test_Form1`.
 - File menu items linked to the `Open_test_Form` and `Open_test_Form1` methods.
 - `use_legacy_network_layer="false"`; `accept_dot_syntax` and `store_unicode_tokens` written explicitly in the host settings.
+- `test_Form` object methods aligned with `test_Form1`: `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. Local dependency on the repository root (`dependencies.json`, `environment4d.json`, path `../..`), so a clone with no `Components` folder loads the component.
 
 ---
 
