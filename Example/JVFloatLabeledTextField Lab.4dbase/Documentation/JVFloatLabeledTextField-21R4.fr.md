@@ -1,0 +1,390 @@
+# JVFloatLabeledTextField — documentation 4D 21 R4
+
+Composant 4D : une étiquette flottante au-dessus d’un champ de saisie.
+
+Licence MIT, Maurice Inzirillo, AJAR SA, 2018 (le dialogue de licence indique aussi 2015-2018). L’idée vient de [la maquette de Matt D. Smith](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users), portée en 4D dans un composant binaire v17, puis migrée en projet 4D 21 R4.
+
+Cette documentation décrit la version **4D 21 R4** (mode projet). Elle s’appuie sur le code des méthodes partagées, sur la base d’exemple convertie et sur les builds du 22 novembre 2026.
+
+Version anglaise : [JVFloatLabeledTextField-21R4.en.md](JVFloatLabeledTextField-21R4.en.md). Présentation courte : [README.fr.md](../README.fr.md).
+
+---
+
+## Présentation
+
+Le libellé du *placeholder* du champ s’affiche au-dessus de la saisie :
+
+- en bleu (`0x002F83FB`) lorsque le champ a le focus ;
+- en gris (`0x00AAAAAA`) sinon ;
+- le fond de l’étiquette est transparent (`Background color none`).
+
+S’il n’y a pas de valeur, l’étiquette est vidée et le placeholder reste dans le champ.
+
+Le composant expose deux méthodes partagées avec l’hôte (`//%attributes = {"shared":true}`, propriété « Shared by components and host project ») :
+
+- `JVFloatLabeledTextField` — crée et met à jour l’étiquette flottante ;
+- `JVF_Licence` — ouvre le dialogue de licence.
+
+Le projet matrice du composant est `Project/JVFloatLabeledTextField.4DProject`. Les sources sont dans `Project/Sources/`, conformément à l’[architecture d’un projet](https://developer.4d.com/docs/21-R4/Project/architecture).
+
+---
+
+## Compatibilité
+
+| Élément | Valeur constatée |
+| --- | --- |
+| Version cible | 4D 21 R4 (`/Applications/4D 21 R4` sur macOS) |
+| Fichier projet du composant | `compatibilityVersion` **2140**, `"tokenizedText": false` |
+| Fichier projet de la base d’exemple | `compatibilityVersion` **2140** |
+| Mode | projet uniquement (plus de structure binaire `.4DB` / `.4DC`) |
+| Notation objet (composant et hôte) | `accept_dot_syntax="true"` dans `Project/Sources/settings.4DSettings`. Le code du composant n’utilise pas encore la notation point. |
+| Jetons Unicode (composant et hôte) | `store_unicode_tokens="true"` |
+| Couche réseau héritée (hôte) | `use_legacy_network_layer="false"` |
+| Compilation du composant | option `fat_binary="true"` ; cibles utilisées : `x86_64_generic` et `arm64_macOS_lib` |
+
+**4D 21 R4 ne charge pas** l’ancien composant compilé v17 (fichier `.4DC`). Cette tentative produit l’erreur **-10508**. Il faut installer le composant projet 21 R4, interprété ou compilé (`.4DZ`).
+
+La base d’exemple a été convertie par le menu Fichier > Exporter > Structure vers projet. Le journal `Logs/Conversion 2026-11-22T10-30-55.json` indique `"success": true` et l’activation des réglages de compatibilité suivants :
+
+- Save methods as Unicode
+- Use new architecture for application deployments
+- Use object notation to access object properties
+- Use date type instead of ISO date format in objects
+- Use LF for end of line on macOS
+- Don't add a BOM when writing a unicode text file by default
+- Use DirectWrite for text rendering in forms
+- Prefer null values than blank values
+
+Ces réglages sont maintenant aussi écrits explicitement dans le `Project/Sources/settings.4DSettings` de l’hôte : `accept_dot_syntax="true"` et `store_unicode_tokens="true"` dans `<database><misc>`, sur le modèle du fichier de réglages du composant. La documentation 4D 21 R4 décrit ces options sous leur nom d’interface (notamment « Save methods as Unicode » et « Use object notation to access object properties ») ; elle ne publie pas le nom des attributs XML. Les attributs ajoutés sont ceux déjà présents dans le composant, qui a compilé avec succès.
+
+`use_legacy_network_layer` a été passé à `false`. Les [notes de version](https://developer.4d.com/docs/Notes/updates) indiquent que la couche réseau Legacy n’est plus prise en charge à partir de 4D 21 R3, et que les projets sont automatiquement basculés vers ServerNet. Le fichier hôte conserve encore `legacy_print_rendering="true"` et `standard_xpath="false"`. Les méthodes de l’hôte ont encore des jetons `:C` / `:K` ; le `.4DProject` de l’hôte n’a pas la clé `"tokenizedText": false`.
+
+Le fichier modifié est `Project/Sources/settings.4DSettings` (réglages de structure). Il n’existe pas de `Settings/settings.4DSettings` dans cette base.
+
+---
+
+## Installation
+
+Un composant interprété est un projet 4D dont le dossier porte le suffixe `.4dbase` et contient le dossier `Project`. Un composant compilé est un paquet `.4dbase/Contents/` contenant le `.4DZ`, `Info.plist`, `Libraries` et `Resources`. Voir [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components) et [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
+
+Les composants placés dans le dossier `Components` de l’hôte (au même niveau que son dossier `Project`) sont chargés en priorité. On peut aussi les déclarer dans `dependencies.json` de l’hôte. Hors de `Components`, le chemin se déclare dans `environment4d.json`.
+
+Un hôte interprété accepte un composant interprété. Un hôte compilé exige un composant compilé.
+
+À la première ouverture du composant ou de l’hôte, 4D peut demander un fichier de données. Il faut en créer un nouveau. Le composant ne stocke pas de données.
+
+### Composant interprété
+
+1. Prendre le dossier `JVFloatLabeledTextField.4dbase` (projet avec `Project/` et `Resources/`).
+2. Le copier dans le dossier `Components` du projet hôte.
+3. Rouvrir l’hôte pour que 4D charge le composant.
+
+Les builds du 22 novembre 2026 se trouvent dans `JVFloatingLabel-build-2026-11-22/out/Interprété/JVFloatLabeledTextField.4dbase`.
+
+### Composant compilé
+
+1. Prendre le dossier `JVFloatLabeledTextField.4dbase` dont la structure est `Contents/JVFloatLabeledTextField.4DZ`, `Contents/Info.plist`, `Contents/Libraries/` (ici `lib4d-arm64.dylib`) et `Contents/Resources/`.
+2. Le copier dans le dossier `Components` du projet hôte.
+3. Rouvrir l’hôte.
+
+Les builds du 22 novembre 2026 se trouvent dans `JVFloatingLabel-build-2026-11-22/out/Compilé/JVFloatLabeledTextField.4dbase`. C’est cette copie compilée qui est déjà installée dans la base d’exemple documentée ici.
+
+Ne pas laisser côte à côte, dans `Components`, l’ancien paquet v17 (`.4DC`) et le nouveau composant.
+
+---
+
+## API
+
+### `JVFloatLabeledTextField`
+
+Méthode projet partagée.
+
+```4d
+#DECLARE($objPtr : Pointer)
+```
+
+#### Paramètre
+
+| Paramètre | Type | Rôle |
+| --- | --- | --- |
+| `$objPtr` | `Pointer` | Optionnel. Pointeur vers l’objet de saisie (variable ou champ de table). Omise, ou pointeur nil : la méthode utilise `OBJECT Get pointer(Object current)`, c’est-à-dire l’objet dont la méthode vient d’appeler `JVFloatLabeledTextField`. |
+
+Si la cible est un pointeur nil, la méthode ne fait rien.
+
+#### Comportement
+
+1. Lit l’événement courant avec `Form event code`.
+2. Détermine le nom de l’étiquette (voir [Noms des étiquettes](#noms-des-étiquettes)).
+3. Calcule une représentation texte de la valeur (voir [Règles d’affichage selon le type](#règles-daffichage-selon-le-type)).
+4. Selon l’événement :
+   - **On Load** — duplique l’objet modèle `JVF_obj` (`OBJECT DUPLICATE`), place la copie juste au-dessus du champ (`OBJECT MOVE` en coordonnées absolues : gauche et droite du champ, hauteur du modèle), puis affiche ou masque l’étiquette.
+   - **On Getting Focus**, si la valeur n’est pas vide — passe l’étiquette en bleu et y copie le placeholder du champ (`OBJECT Get placeholder`).
+   - **On Losing Focus** — si la valeur est vide, vide l’étiquette ; passe la couleur en gris.
+   - **On After Edit** — passe l’étiquette en bleu ; si `Get edited text` est une chaîne vide, vide l’étiquette, sinon y copie le placeholder.
+   - **Tout autre événement** — si la valeur est vide, vide l’étiquette (branche `Else`). Pendant On Load, l’étiquette n’existe pas encore : la méthode ne cherche le pointeur nommé qu’en dehors de cet événement.
+
+Les couleurs sont imposées par `OBJECT SET RGB COLORS` (premier plan bleu ou gris, fond `Background color none`). Police et taille viennent du modèle `JVF_obj`.
+
+#### Exemple — appel depuis la méthode objet du champ
+
+C’est la forme recommandée. Elle permet un nom d’étiquette unique à partir du nom de l’objet.
+
+```4d
+JVFloatLabeledTextField
+```
+
+On peut aussi passer explicitement le pointeur courant :
+
+```4d
+JVFloatLabeledTextField(OBJECT Get pointer(Object current))
+```
+
+On peut encore passer un autre pointeur (`Self`, un pointeur de variable ou de champ). [`Self`](https://developer.4d.com/docs/21-R4/commands/self) n’est conservé que pour compatibilité depuis la v12 : la documentation 4D recommande `OBJECT Get pointer`. Si le pointeur est passé depuis une méthode qui n’est pas la méthode objet du champ, le nommage de l’étiquette retombe sur le repli décrit plus bas.
+
+#### Exemple — rappel depuis une autre méthode (réinitialisation)
+
+La méthode d’exemple `Reset_Var` vide les variables puis rappelle le composant avec le pointeur de chaque objet nommé :
+
+```4d
+$Title_obj_ptr:=OBJECT Get pointer(Object named; "Title_obj")
+CLEAR VARIABLE($Title_obj_ptr->)
+JVFloatLabeledTextField($Title_obj_ptr)
+```
+
+Dans ce cas, le nom de l’étiquette est dérivé du nom de variable (ou, pour un champ de table, de `field_<table>_<champ>`).
+
+---
+
+### `JVF_Licence`
+
+Méthode projet partagée, sans paramètre.
+
+Ouvre le formulaire projet `JVF_licence` dans une fenêtre `Open form window` (`Movable form dialog box`, `Horizontally centered`, `Vertically centered`), puis appelle `DIALOG` en lui passant un objet dont la propriété `licence` contient le texte MIT en HTML stylé. Le formulaire affiche ce texte dans un objet lié à `Form.licence` (texte stylé, non focusable).
+
+#### Exemple
+
+```4d
+JVF_Licence
+```
+
+Dans la base d’exemple, le bouton `?` (`btn_obj`) des formulaires `test_Form` et `test_Form1` appelle cette méthode au clic.
+
+---
+
+## Intégration dans un formulaire
+
+### Événements à activer
+
+Sur **chaque** objet de saisie concerné, activer au minimum les événements objet suivants (liste reprise du commentaire de la méthode et du code) :
+
+- On Load
+- On Getting Focus
+- On Losing Focus
+- On After Edit
+
+Puis, dans la méthode objet du champ, appeler `JVFloatLabeledTextField` (avec ou sans pointeur, voir ci-dessus).
+
+Le composant ne réagit de façon spécifique qu’à ces quatre événements. Les autres événements éventuels de l’objet tombent dans la branche `Else` (masquer l’étiquette si la valeur est vide).
+
+Dans la base d’exemple, `test_Form` et `test_Form1` activent sur chaque champ concerné : `onLoad`, `onClick`, `onLosingFocus`, `onGettingFocus`, `onDataChange`, `onAfterEdit`. Les événements de formulaire des deux fenêtres étaient déjà identiques ; ils n’incluent pas On Getting Focus ni On Losing Focus au niveau formulaire, ce qui est normal : ces événements doivent être cochés sur les objets de saisie.
+
+### Objet modèle `JVF_obj`
+
+Le formulaire hôte doit contenir un objet de saisie texte nommé **exactement** `JVF_obj`. Au chargement, la méthode le duplique puis positionne la copie.
+
+- La **hauteur** du modèle devient la hauteur de l’étiquette. La largeur et les abscisses sont celles du champ.
+- Police, taille et les autres propriétés de liste sont copiées, puis la méthode impose le gris ou le bleu, fond transparent.
+- Le modèle ne doit pas avoir les quatre événements ci-dessus. [`OBJECT DUPLICATE`](https://developer.4d.com/docs/21-R4/commands/object-duplicate) régénère On Load sur la copie si la source l’a, et la documentation 4D interdit d’appeler `OBJECT DUPLICATE` depuis cet On Load généré.
+- La visibilité fait partie des propriétés copiées. Ne pas masquer le modèle par la propriété de visibilité, sinon les étiquettes le seraient aussi. Le placer hors de la zone utile, ou sur une page jamais affichée.
+- Décochez « saisissable » si l’étiquette ne doit pas prendre le focus. Dans l’exemple, `JVF_obj` a `enterable: false` et `focusable: false`.
+- Chaque champ concerné doit avoir un placeholder : c’est le texte de l’étiquette (`OBJECT Get placeholder`).
+
+L’appel `OBJECT DUPLICATE(*; "JVF_obj"; $labelName)` ne passe pas de variable ni de coordonnées : la syntaxe actuelle place `newVar` et `boundTo` avant les coordonnées, ce qui décalerait la position si on les fournissait comme en v17. La copie est ensuite placée avec `OBJECT MOVE`.
+
+### Noms des étiquettes
+
+Les noms d’objets sont uniques dans un formulaire. Appelée depuis la méthode objet du champ, et lorsque `OBJECT Get pointer(Object current)` désigne la même cible que le pointeur reçu, la méthode nomme l’étiquette `<nom de l'objet>_JVF_obj` via [`OBJECT Get name`](https://developer.4d.com/docs/21-R4/commands/object-get-name). Plusieurs champs, y compris deux objets liés au même champ de table, ont alors des étiquettes distinctes.
+
+[`RESOLVE POINTER`](https://developer.4d.com/docs/21-R4/commands/resolve-pointer) renvoie un nom de variable vide pour un champ de table. L’ancienne formule `nom+"_JVF_obj"` donnait donc `_JVF_obj` à tous les champs. Ce repli n’est utilisé que lorsque le pointeur ne correspond pas à l’objet courant (appel depuis une autre méthode) :
+
+- nom de variable s’il n’est pas vide ;
+- sinon `field_<numéroDeTable>_<numéroDeChamp>` lorsque la table ou le champ n’est pas zéro ;
+- sinon le nom d’objet courant, ou `JVF` s’il est encore vide.
+
+Dans le cas `field_<table>_<champ>`, deux objets liés au même champ partageraient une étiquette. Il faut donc appeler la méthode depuis chaque méthode objet.
+
+### Règles d’affichage selon le type
+
+| Valeur | Étiquette |
+| --- | --- |
+| Texte, champ alpha ou chaîne (`Is alpha field`, `Is text`, `Is string var`) vide | masquée |
+| Date nulle (`String` avec `Blank if null date`) | masquée |
+| Heure nulle (`String` avec `Blank if null time`, soit 00:00:00) | masquée. Minuit et « vide » sont la même valeur en 4D. |
+| Réel, entier, entier long, entier 64 bits (`Is real`, `Is integer`, `Is longint`, `Is integer 64 bits`), y compris **0** | affichée. 0 n’est plus traité comme vide. |
+| Champ de table en SQL NULL (`Is field value Null` est utilisé lorsque `RESOLVE POINTER` renvoie un numéro de champ > 0), si « Map NULL values to blank values » est décoché | masquée. Sinon la commande renvoie toujours Faux. |
+| Tout autre type | affichée (la méthode force la valeur interne `"X"` pour montrer l’étiquette) |
+
+Après saisie, un champ numérique vidé redevient 0 à la validation : l’étiquette revient. Un nombre n’a pas d’état vide distinct de 0, sauf NULL SQL.
+
+Pendant la saisie, c’est `Get edited text` qui décide, y compris pour un nombre : tant que le contenu édité est vide, l’étiquette est masquée.
+
+---
+
+## Base d’exemple
+
+La base hôte convertie en mode projet se trouve ici :
+
+`/Users/maurice/Desktop/JVFloatLabeledTextField-Lab-projet-2026-11-22/JVFloatLabeledTextField Lab.4dbase/`
+
+Fichier à ouvrir dans 4D 21 R4 :
+
+`Project/JVFloatLabeledTextField Lab.4DProject`
+
+Le dossier `Data/` est vide. Au premier lancement, 4D proposera de créer un fichier de données : en créer un nouveau. Le catalogue porte encore `package_name="JVFloatLabeledTextFieldv17 Lab"` et `data_file_path=":JVFloatLabeledTextField.4DD"`. L’ancienne base binaire (`.4DB`, `.4DD`, index, journal) a été écartée et n’est plus à la racine du projet. Il n’y a pas de table métier : uniquement des formulaires de test.
+
+Le dossier `Components/JVFloatLabeledTextField.4dbase` contient le **composant compilé** 21 R4.
+
+### Formulaires
+
+Deux formulaires projet, tous deux avec un modèle `JVF_obj`, un bouton **Reset all** (`Reset_Var`), un bouton **?** (`JVF_Licence`) et un bouton **Close** (action standard `cancel`).
+
+| Formulaire | Rôle | Appel du composant | Événements des champs | Variables |
+| --- | --- | --- | --- | --- |
+| `test_Form` | variante « large » (classe CSS `Field1`, hauteur de saisie 34, modèle `JVF_obj` en classe `JVFloatLabeledTextField`, 10 pt) | `JVFloatLabeledTextField` sans paramètre | `onLoad`, `onClick`, `onLosingFocus`, `onGettingFocus`, `onDataChange`, `onAfterEdit` | pas de `dataSource` dans le formulaire : variables liées au nom de l’objet, interrogées via `OBJECT Get pointer(Object named; …)` |
+| `test_Form1` | variante « petite » (classe `Field2`, hauteur 15, modèle en classe `JVFloatLabeledTextField_min`, 8 pt) | `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` | identiques à `test_Form` | `Title`, `Price` (nombre), `Specific_location`, `vDate` (date), `vTime` (heure, format `hh_mm_ss`), `Description` |
+
+Champs des deux formulaires et leurs placeholders : `Title_obj` (Title), `Price_obj` (Price), `Sp_locat_obj` (Specific Location (optional)), `Date_obj` (Birthday), `Time_obj` (Birthday time (optional)), `Description_obj` (Description).
+
+Les événements objet de `test_Form` ont été alignés sur ceux de `test_Form1`, afin que le changement de couleur au focus et au blur fonctionne aussi sur la variante large.
+
+Dans les deux formulaires, `JVF_obj` est sur la page 1, en haut (`top` 5, hauteur 11), non saisissable et non focusable, sans les quatre événements du composant.
+
+### Méthodes de l’hôte
+
+- `Reset_Var` — obtient un pointeur sur chaque objet nommé, fait `CLEAR VARIABLE`, puis rappelle `JVFloatLabeledTextField` avec ce pointeur.
+- `Open_test_Form` — ouvre `test_Form` : `Open form window("test_Form"; Plain form window; Horizontally centered; Vertically centered)`, puis `DIALOG("test_Form")` et `CLOSE WINDOW` ([Open form window](https://developer.4d.com/docs/21-R4/commands/open-form-window), [DIALOG](https://developer.4d.com/docs/21-R4/commands/dialog), [CLOSE WINDOW](https://developer.4d.com/docs/21-R4/commands/close-window)).
+- `Open_test_Form1` — même schéma pour `test_Form1`.
+- `Compiler_Variables` — déclare `Button` (réel), `Description`, `Specific_location`, `Title` (texte), `vDate` (date), `Price` (réel), `vTime` (heure). Méthode invisible.
+- `Compiler_Methods` — la redéclaration `C_POINTER(JVFloatLabeledTextField; $1)` est commentée : le composant déclare déjà le paramètre avec `#DECLARE`.
+- `onStartup` — fichier présent, corps vide.
+
+Le dossier `Project/Trash/Methods/` contient une ancienne copie de `JVFloatLabeledTextField` (version hôte v17, conservée à la conversion) et une méthode `(test)`. Elles ne font pas partie du projet actif.
+
+### Menu
+
+La barre « Menu Bar #1 » propose, dans le menu Fichier :
+
+- **Test Form 1 (Large)** → méthode `Open_test_Form` → formulaire `test_Form`. C’est la variante la plus grande (saisies de 34 px, classe `Field1`).
+- **Test Form 2 (Small)** → méthode `Open_test_Form1` → formulaire `test_Form1`. C’est la variante plus compacte (saisies de 15 px, classe `Field2`).
+
+La correspondance suit la taille réelle des formulaires, pas le chiffre dans le nom interne (`test_Form1` est le petit formulaire).
+
+### Compilation de l’hôte
+
+L’hôte a été compilé avec 4D 21 R4, cibles `x86_64_generic` et `arm64_macOS_lib` : `success` vrai, aucune erreur, y compris après l’ajout de `Open_test_Form` et `Open_test_Form1`. Sept avertissements de retypage (code 520.19, `isError: false`) dans `Compiler_Variables`, un par variable : `BUTTON`, `DESCRIPTION`, `SPECIFIC_LOCATION`, `TITLE`, `VDATE`, `PRICE`, `VTIME`.
+
+---
+
+## Changements par rapport à la v17 et correctifs
+
+### Structure
+
+- Sources déplacées dans `Project/Sources/`, avec un fichier `.4DProject` (`compatibilityVersion` 2140).
+- Composant livrable en projet interprété (`.4dbase` + `Project`) ou compilé (`.4DZ` dans `Contents/`).
+- Jetons `:C` / `:K` retirés du composant (`"tokenizedText": false`).
+- Réglage `use_legacy_network_layer` retiré du composant. Celui-ci n’a pas de code client-serveur. La page Compatibilité 21 R4 ne liste plus cette couche : elle a été retirée en 21 R3. Sur l’hôte, l’attribut a été passé à `false`.
+- La base d’exemple binaire a été convertie en mode projet et renommée `JVFloatLabeledTextField Lab` (le « v17 » a été retiré des noms).
+
+### Syntaxe et API interne
+
+- `#DECLARE($objPtr : Pointer)` à la place de `C_POINTER($1)` et `Count parameters`.
+- Variables locales typées avec `var`.
+- `Form event code` à la place de `Form event`.
+- Méthodes partagées conservées.
+
+### Correctifs de comportement
+
+- **Noms d’étiquette uniques** grâce à `OBJECT Get name(Object current)`, au lieu de `RESOLVE POINTER` seul (qui laissait `_JVF_obj` pour tous les champs de table).
+- **`Is field value Null`** : un champ de table en SQL NULL masque l’étiquette (si le mappage NULL → valeurs vides est décoché).
+- La valeur numérique **0** affiche l’étiquette (en v17, `String` égal à `"0"` la masquait). La branche numérique couvre aussi `Is integer 64 bits`. Les types texte incluent `Is string var`.
+- `OBJECT DUPLICATE` ne reçoit plus les coordonnées ; la copie est positionnée avec `OBJECT MOVE` en absolu.
+- En-tête de licence rétabli dans les commentaires de méthode (le texte s’arrêtait à « IN CONNE »). Le commentaire « if it's a time » sur la branche numérique disait en réalité « nombre ».
+- Contrôles supplémentaires sur les pointeurs d’étiquette (`Is nil pointer`) avant d’écrire dans l’objet dupliqué.
+
+### Correctifs de la base d’exemple (22 novembre 2026)
+
+- Événements On Getting Focus et On Losing Focus (plus On Click et On Data Change) activés sur les champs de `test_Form`, comme dans `test_Form1`.
+- Menu Fichier relié aux méthodes `Open_test_Form` et `Open_test_Form1`.
+- `use_legacy_network_layer="false"` ; `accept_dot_syntax` et `store_unicode_tokens` écrits explicitement dans les réglages de l’hôte.
+
+---
+
+## Reconstruction
+
+Procédure utilisée le 22 novembre 2026 avec 4D 21 R4, sur une **copie de travail** du projet (jamais sur l’original ni sur la branche principale).
+
+### 1. Compiler le projet du composant
+
+```4d
+var $opt; $res : Object
+$opt:=New object("targets"; New collection("x86_64_generic"; "arm64_macOS_lib"))
+$res:=Compile project($opt)
+```
+
+Les cibles `x86_64_generic` et `arm64_macOS_lib` sont celles documentées pour [`Compile project`](https://developer.4d.com/docs/21-R4/commands/compile-project). Le réglage composant `store_unicode_tokens="true"` (et `accept_dot_syntax="true"`) est requis pour cette compilation.
+
+### 2. Construire le paquet compilé
+
+Après une compilation réussie, appeler [`BUILD APPLICATION`](https://developer.4d.com/docs/21-R4/commands/build-application) avec un fichier `buildApp.4DSettings` contenant au minimum :
+
+- `BuildComponent` = `True`
+- `BuildApplicationName` = `JVFloatLabeledTextField`
+- `BuildCompiled` = `False`
+- `IncludeAssociatedFolders` = `True`
+- un dossier de destination (`BuildMacDestFolder` sur macOS)
+
+Le générateur produit, dans le dossier de destination, `Components/JVFloatLabeledTextField.4dbase/Contents/` avec le `.4DZ`, les `Resources` et `Libraries`. Voir [Application Builder](https://developer.4d.com/docs/21-R4/Desktop/building).
+
+### 3. Paquet interprété
+
+Recopier le projet dans un dossier `JVFloatLabeledTextField.4dbase` qui contient `Project/` et `Resources/` (sans le code compilé). Ce dossier se place tel quel dans `Components` d’un hôte interprété.
+
+Les artefacts de cette reconstruction sont dans `JVFloatingLabel-build-2026-11-22/out/` (`Compilé/` et `Interprété/`).
+
+---
+
+## Limites et points non testés
+
+- **Champs de table et SQL NULL.** Les formulaires d’exemple n’utilisent que des variables processus, pas des champs de table. La branche `Is field value Null` n’a pas été exercée dans cette base.
+- **Heure 00:00:00.** Minuit et une heure « vide » sont indistinguables ; l’étiquette est masquée dans les deux cas.
+- **Valeur numérique 0.** Après validation, un nombre effacé redevient 0 et l’étiquette réapparaît.
+- **Client-serveur, Windows, hôte compilé.** Le travail et les essais ont été faits avec 4D 21 R4 sur macOS (MacBook Pro), hôte interprété. Aucun test client-serveur, ni Windows, ni hôte compilé, n’est enregistré ici.
+- **Interface.** Les menus et le changement de couleur au focus sur `test_Form` ont été corrigés dans les sources. Ils n’ont pas été cliqués ni observés dans l’interface 4D (la capture d’écran n’était pas disponible sur la machine). Le composant interprété avait été validé dans l’hôte avant la conversion ; le comportement visuel du paquet compilé, dans cette base projet, n’a pas été confirmé de la même façon.
+- **Signature.** Le `buildApp.4DSettings` utilisé a `MacSignature` à `False`. Le paquet n’est pas signé.
+- **Réglages hérités de l’hôte.** `legacy_print_rendering` et `standard_xpath` n’ont pas été modifiés. Le catalogue référence encore l’ancien nom v17 et l’ancien `.4DD`.
+- **Avertissements du compilateur hôte.** Les sept retypages de `Compiler_Variables` n’empêchent pas la compilation ; ils n’ont pas été nettoyés.
+
+---
+
+## Crédits
+
+Cette nouvelle version a été réalisée avec l'aide de Cursor et de Grok Bot.
+
+---
+
+## Licence
+
+MIT License.
+
+Copyright 2018 Maurice Inzirillo - AJAR SA  
+http://www.ajar.ch
+
+(Le formulaire `JVF_licence` indique « Copyright 2015-2018 Maurice Inzirillo - AJAR SA ».)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Dépôt et pull request de la migration : [minzirillo/JVFloatingLabel](https://github.com/minzirillo/JVFloatingLabel), [PR #1](https://github.com/minzirillo/JVFloatingLabel/pull/1).
