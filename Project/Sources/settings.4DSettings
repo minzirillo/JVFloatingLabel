@@ -12,13 +12,8 @@
 			</remote>
 		</web>
 		<database>
-			<misc accept_dot_syntax="false" allow_json_dates="false" store_unicode_tokens="false"/>
+			<misc accept_dot_syntax="true" allow_json_dates="false" store_unicode_tokens="false"/>
 		</database>
-		<server>
-			<network>
-				<options use_legacy_network_layer="true"/>
-			</network>
-		</server>
 		<deployment>
 			<options generate_applications_for_read_only_deployment="false"/>
 		</deployment>

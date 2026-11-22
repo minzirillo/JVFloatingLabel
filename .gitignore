@@ -1,2 +1,3 @@
-# ignore user preferences
+# ignore user preferences and the cache 4D rebuilds when the project is opened
 userPreferences.*/
+Project/DerivedData/
