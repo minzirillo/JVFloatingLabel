@@ -4,7 +4,21 @@ Base d’exemple **4D 21 R4** (mode projet) pour le composant [JVFloatLabeledTex
 
 Le composant affiche le *placeholder* d’un champ au-dessus de la saisie : bleu au focus, gris sinon. S’il n’y a pas de valeur, l’étiquette disparaît. Idée originale : [maquette de Matt D. Smith](http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users). Portage 4D : Maurice Inzirillo, AJAR SA, 2018, licence MIT.
 
-Cette base est la conversion en projet de l’ancien laboratoire binaire. Le composant **compilé** 21 R4 est déjà dans `Components/JVFloatLabeledTextField.4dbase`.
+Cette base est la conversion en projet de l’ancien laboratoire binaire. Un clone n’a pas de dossier `Components` : l’exemple charge le projet matrice du dépôt (`Project/JVFloatLabeledTextField.4DProject`), en interprété.
+
+Le composant est déclaré dans `Project/Sources/dependencies.json` (nom `JVFloatLabeledTextField`, objet vide : [dependencies.json](https://developer.4d.com/docs/21-R4/Project/components#dependenciesjson)). Le chemin est dans `environment4d.json`, à la racine de ce paquet : `../..`. Les chemins relatifs partent de ce fichier ([Relative paths vs absolute paths](https://developer.4d.com/docs/21-R4/Project/components#relative-paths-vs-absolute-paths)) ; il peut se trouver dans le dossier paquet ([environment4d.json](https://developer.4d.com/docs/21-R4/Project/components#environment4djson)). `../..` est la racine du dépôt, dossier racine du projet matrice.
+
+Le suffixe `.4dbase` n’est exigé que pour une copie dans le dossier `Components` de l’hôte ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). Une dépendance locale vise « the project root folder of the component » ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). L’ajout d’une dépendance accepte un `.4DZ` ou un `.4DProject` ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). Deux niveaux au-dessus du fichier restent dans la portée d’un chemin relatif ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components)).
+
+Les méthodes objet de `test_Form` et de `test_Form1` appellent `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (jetons `:C1124` et `:K67:2` dans les sources). Sans composant chargé, le nom seul provoque l’erreur 37.
+
+`test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Un clone s’exécute ainsi : la dépendance pointe vers les sources du composant.
+
+Compiler l’hôte tant que cette dépendance pointe vers les sources échoue avec : « Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence') ». Un hôte compilé ne charge pas un composant interprété.
+
+Pour compiler l’hôte, produire le composant compilé (`.4DZ`, section Reconstruction de la documentation) et l’installer dans `Example/JVFloatLabeledTextField Lab.4dbase/Components/JVFloatLabeledTextField.4dbase/` (le dossier qui contient `Contents/`). On peut aussi retirer la dépendance, ou faire pointer `environment4d.json` vers ce paquet compilé au lieu des sources.
+
+[Priority](https://developer.4d.com/docs/21-R4/Project/components#priority) classe les emplacements du plus prioritaire au moins prioritaire : 1. le dossier `Components` de l’hôte ; 2. le composant déclaré dans `dependencies.json` (le chemin de `environment4d.json` remplace celui de `dependencies.json`) ; 3. les composants internes de 4D. Le dossier `Components` gagne. Le composant qui s’y trouve est chargé (statut Overloading) ; la dépendance du même nom n’est pas chargée (statut Overloaded). N’y placez pas l’ancien composant compilé (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
 
 **Historique.** La version d’origine 4D v17 est disponible au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
 

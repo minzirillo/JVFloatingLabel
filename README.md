@@ -19,6 +19,54 @@ Une base hôte d'exemple convertie en mode projet 4D 21 R4 se trouve dans [`Exam
 
 A converted 4D 21 R4 project-mode host example is in [`Example/JVFloatLabeledTextField Lab.4dbase/`](Example/JVFloatLabeledTextField%20Lab.4dbase/). The full documentation (French and English) is in [`Documentation/`](Documentation/).
 
+## Ouvrir l'exemple depuis un clone
+
+Un clone n'a pas de dossier `Components` dans l'exemple. Ouvrez `Example/JVFloatLabeledTextField Lab.4dbase/Project/JVFloatLabeledTextField Lab.4DProject` avec 4D 21 R4. Si 4D demande un fichier de données, créez-en un nouveau. En mode Application, le menu Fichier ouvre **Test Form 1 (Large)** (`test_Form`) et **Test Form 2 (Small)** (`test_Form1`).
+
+L'exemple charge le projet matrice de ce dépôt, en interprété, par les dépendances 4D 21 R4 :
+
+- [`Example/JVFloatLabeledTextField Lab.4dbase/Project/Sources/dependencies.json`](Example/JVFloatLabeledTextField%20Lab.4dbase/Project/Sources/dependencies.json) déclare `JVFloatLabeledTextField` ([dependencies.json](https://developer.4d.com/docs/21-R4/Project/components#dependenciesjson)).
+- [`Example/JVFloatLabeledTextField Lab.4dbase/environment4d.json`](Example/JVFloatLabeledTextField%20Lab.4dbase/environment4d.json) donne le chemin relatif `../..`. Les chemins relatifs partent du fichier `environment4d.json` ([Relative paths vs absolute paths](https://developer.4d.com/docs/21-R4/Project/components#relative-paths-vs-absolute-paths)). Ce fichier est dans le dossier paquet de l'hôte, emplacement prévu par la doc ([environment4d.json](https://developer.4d.com/docs/21-R4/Project/components#environment4djson)).
+- `../..` est la racine de ce dépôt, dossier racine du projet matrice : il contient `Project/JVFloatLabeledTextField.4DProject`.
+
+Le suffixe `.4dbase` est exigé pour installer un composant interprété dans le dossier `Components` ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). Une dépendance locale pointe vers « the project root folder of the component », le dossier qui contient `Project/` et le fichier `.4DProject` ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). Le dialogue d'ajout accepte un `.4DZ` ou un `.4DProject` ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). La racine du dépôt est ce dossier. Deux niveaux au-dessus de `environment4d.json` restent dans la portée d'un chemin relatif ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components)).
+
+Le nom déclaré est `JVFloatLabeledTextField`, celui du fichier `.4DProject`. Il ne dépend pas du nom du dossier de clone.
+
+Les méthodes objet de `test_Form` et de `test_Form1` appellent `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (jetons `:C1124` et `:K67:2` dans les sources de l'hôte). Sans composant chargé, le nom seul est une variable : erreur 37, « Il manque le signe d'affectation (:=) ».
+
+`test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Un clone s'exécute ainsi : la dépendance pointe vers les sources du composant.
+
+Compiler l'hôte tant que cette dépendance pointe vers les sources échoue avec : « Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence') ». Un hôte compilé ne charge pas un composant interprété.
+
+Pour compiler l'hôte, produire le composant compilé (`.4DZ`, voir [Reconstruction](Documentation/JVFloatLabeledTextField-21R4.fr.md#reconstruction)) et l'installer dans `Example/JVFloatLabeledTextField Lab.4dbase/Components/JVFloatLabeledTextField.4dbase/` (le dossier qui contient `Contents/`). On peut aussi retirer la dépendance, ou faire pointer `environment4d.json` vers ce paquet compilé au lieu des sources.
+
+[Priority](https://developer.4d.com/docs/21-R4/Project/components#priority) classe les emplacements du plus prioritaire au moins prioritaire : 1. le dossier `Components` de l'hôte ; 2. le composant déclaré dans `dependencies.json` (le chemin de `environment4d.json` remplace celui de `dependencies.json`) ; 3. les composants internes de 4D. Le dossier `Components` gagne. Le composant qui s'y trouve est chargé (statut Overloading) ; la dépendance du même nom n'est pas chargée (statut Overloaded). N'y placez pas l'ancien composant compilé (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
+
+## Open the example from a clone
+
+A clone has no `Components` folder in the example. Open `Example/JVFloatLabeledTextField Lab.4dbase/Project/JVFloatLabeledTextField Lab.4DProject` with 4D 21 R4. If 4D asks for a data file, create a new one. In Application mode, the File menu opens **Test Form 1 (Large)** (`test_Form`) and **Test Form 2 (Small)** (`test_Form1`).
+
+The example loads this repository's matrix project, interpreted, through the 4D 21 R4 dependency files:
+
+- [`Example/JVFloatLabeledTextField Lab.4dbase/Project/Sources/dependencies.json`](Example/JVFloatLabeledTextField%20Lab.4dbase/Project/Sources/dependencies.json) declares `JVFloatLabeledTextField` ([dependencies.json](https://developer.4d.com/docs/21-R4/Project/components#dependenciesjson)).
+- [`Example/JVFloatLabeledTextField Lab.4dbase/environment4d.json`](Example/JVFloatLabeledTextField%20Lab.4dbase/environment4d.json) sets the relative path `../..`. Relative paths are resolved from the `environment4d.json` file ([Relative paths vs absolute paths](https://developer.4d.com/docs/21-R4/Project/components#relative-paths-vs-absolute-paths)). The file sits in the host package folder, which the docs allow ([environment4d.json](https://developer.4d.com/docs/21-R4/Project/components#environment4djson)).
+- `../..` is the repository root, the matrix project's root folder: it contains `Project/JVFloatLabeledTextField.4DProject`.
+
+The `.4dbase` suffix is required to install an interpreted component in the `Components` folder ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). A local dependency points at "the project root folder of the component", the folder that contains `Project/` and the `.4DProject` file ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). The add-dependency dialog accepts a `.4DZ` or a `.4DProject` ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). This repository's root is that folder. Two levels above `environment4d.json` stay inside the relative-path range described when creating a component from the host ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components)).
+
+The declared name is `JVFloatLabeledTextField`, the `.4DProject` file name. It does not depend on the clone folder's name.
+
+Object methods on `test_Form` and `test_Form1` call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (tokens `:C1124` and `:K67:2` in the host sources). With no component loaded, a bare name is a variable: error 37, "Il manque le signe d'affectation (:=)".
+
+`test_Form` and `test_Form1` were validated in interpreted mode with 4D 21 R4 on macOS. A clone runs that way: the dependency points at the component sources.
+
+Compiling the host while that dependency points at the sources fails with: "Le composant 'JVFloatLabeledTextField' doit être compilé (méthode 'JVF_Licence')". A compiled host cannot load this interpreted component.
+
+To compile the host, build the compiled component (`.4DZ`, see [Rebuild](Documentation/JVFloatLabeledTextField-21R4.en.md#rebuild)) and install it in `Example/JVFloatLabeledTextField Lab.4dbase/Components/JVFloatLabeledTextField.4dbase/` (the folder that contains `Contents/`). You can also remove the dependency, or point `environment4d.json` at that compiled package instead of the sources.
+
+[Priority](https://developer.4d.com/docs/21-R4/Project/components#priority) orders locations from highest to lowest: 1. the host `Components` folder; 2. the component declared in `dependencies.json` (the `environment4d.json` path overrides the `dependencies.json` path); 3. internal 4D components. The `Components` folder wins. The component stored there is loaded (Overloading); the dependency of the same name is not loaded (Overloaded). Do not put the old compiled component there (`.4DC`, tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17)).
+
 ## Installation dans un hôte 4D 21 R4
 
 Le fichier à ouvrir est `Project/JVFloatLabeledTextField.4DProject`. Les sources sont dans `Project/Sources/`, conformément à l'[architecture d'un projet](https://developer.4d.com/docs/21-R4/Project/architecture). `compatibilityVersion` reste **2140**.
@@ -48,7 +96,7 @@ Un hôte interprété charge un composant interprété. Le dossier installé, au
 
 Ce dossier `Components` est celui de l'hôte, au même niveau que son dossier `Project`. Les composants qui s'y trouvent sont prioritaires. Voir [Dependencies](https://developer.4d.com/docs/21-R4/Project/components). On peut aussi le déclarer dans `dependencies.json`. Hors de `Components`, le chemin va dans `environment4d.json`.
 
-Dans l'hôte du Lab, le formulaire `test_Form1` fonctionne avec ce composant interprété.
+L'hôte du Lab ne copie pas le composant dans `Components`. Il le charge depuis la racine du dépôt, comme décrit dans [Ouvrir l'exemple depuis un clone](#ouvrir-lexemple-depuis-un-clone). `test_Form` et `test_Form1` appellent la méthode partagée.
 
 ### Ancien composant compilé
 
@@ -106,7 +154,7 @@ An interpreted host loads an interpreted component. The installed folder, suffix
 
 That `Components` folder is the host's, next to its `Project` folder. Components stored there have priority. See [Dependencies](https://developer.4d.com/docs/21-R4/Project/components). You can also declare it in `dependencies.json`. Outside `Components`, put the path in `environment4d.json`.
 
-In the Lab host, form `test_Form1` works with this interpreted component.
+The Lab host does not copy the component into `Components`. It loads it from the repository root, as described in [Open the example from a clone](#open-the-example-from-a-clone). `test_Form` and `test_Form1` call the shared method.
 
 ### Old compiled component
 
@@ -150,7 +198,7 @@ Dans la méthode objet du champ :
 JVFloatLabeledTextField
 ```
 
-Le paramètre pointeur est optionnel. S'il est omis, ou si c'est un pointeur nil, la méthode utilise `OBJECT Get pointer(Object current)`. On peut encore passer un pointeur (`Self` ou un pointeur de champ), mais [`Self`](https://developer.4d.com/docs/21-R4/commands/self) n'est conservé que pour compatibilité depuis la v12 : la doc recommande `OBJECT Get pointer`.
+Le paramètre pointeur est optionnel une fois la méthode connue. S'il est omis, ou si c'est un pointeur nil, la méthode utilise `OBJECT Get pointer(Object current)`. On peut encore passer un pointeur (`Self` ou un pointeur de champ), mais [`Self`](https://developer.4d.com/docs/21-R4/commands/self) n'est conservé que pour compatibilité depuis la v12 : la doc recommande `OBJECT Get pointer`. Les deux formulaires de l'exemple passent ce pointeur. Sans composant chargé, le nom seul, sans appel, est une variable (erreur 37).
 
 `JVF_Licence` ouvre le dialogue de licence (formulaire projet `JVF_licence`).
 
@@ -169,7 +217,7 @@ In the input's object method:
 JVFloatLabeledTextField
 ```
 
-The pointer parameter is optional. When it is omitted, or when it is a nil pointer, the method uses `OBJECT Get pointer(Object current)`. You can still pass a pointer (`Self`, or a field pointer), but [`Self`](https://developer.4d.com/docs/21-R4/commands/self) is kept only for compatibility since v12: the docs recommend `OBJECT Get pointer`.
+The pointer parameter is optional once the method is known. When it is omitted, or when it is a nil pointer, the method uses `OBJECT Get pointer(Object current)`. You can still pass a pointer (`Self`, or a field pointer), but [`Self`](https://developer.4d.com/docs/21-R4/commands/self) is kept only for compatibility since v12: the docs recommend `OBJECT Get pointer`. Both example forms pass that pointer. With no component loaded, a bare name, with no call, is a variable (error 37).
 
 `JVF_Licence` opens the licence dialog (project form `JVF_licence`).
 
@@ -248,6 +296,8 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - En-tête de licence rétabli (le texte s'arrêtait à « IN CONNE »). Le commentaire « if it's a time » sur la branche numérique disait en réalité « nombre ».
 - `OBJECT DUPLICATE` ne reçoit plus les coordonnées : la syntaxe actuelle place `newVar` et `boundTo` avant elles. La copie est positionnée avec `OBJECT MOVE` en absolu.
 - La version d'origine 4D v17 reste dans l'historique, au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). Elle n'est plus dans l'arbre de cette branche. Le fichier de génération 21 R4 est `Settings/buildApp.4DSettings`.
+- L'exemple charge le projet matrice par `dependencies.json` et `environment4d.json` (chemin `../..`). Les méthodes objet de `test_Form` passent `OBJECT Get pointer(Object current)`, comme `test_Form1`. Cela corrige l'erreur 37 sur un clone sans dossier `Components`.
+- `test_Form` et `test_Form1` validés en interprété, 4D 21 R4, macOS. La compilation de l'hôte échoue tant que la dépendance pointe vers les sources : il faut le `.4DZ` dans `Components`, qui prime sur la dépendance.
 
 ### 2018 — v17
 
@@ -266,6 +316,8 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - Licence header restored (it stopped at "IN CONNE"). The "if it's a time" comment on the numeric branch now says it is a number.
 - `OBJECT DUPLICATE` no longer receives the coordinates: the current syntax puts `newVar` and `boundTo` before them. The copy is placed with `OBJECT MOVE` in absolute mode.
 - The original 4D v17 version stays in history, at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). It is no longer in this branch's tree. The 21 R4 build file is `Settings/buildApp.4DSettings`.
+- The example loads the matrix project through `dependencies.json` and `environment4d.json` (path `../..`). `test_Form` object methods pass `OBJECT Get pointer(Object current)`, as `test_Form1` does. This fixes error 37 on a clone that has no `Components` folder.
+- `test_Form` and `test_Form1` validated interpreted, 4D 21 R4, macOS. Compiling the host fails while the dependency points at the sources: the host needs the `.4DZ` in `Components`, which takes priority over the dependency.
 
 ### 2018 — v17
 

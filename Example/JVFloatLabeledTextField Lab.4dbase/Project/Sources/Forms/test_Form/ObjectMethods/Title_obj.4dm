@@ -1,2 +1,1 @@
-
-JVFloatLabeledTextField
+JVFloatLabeledTextField(OBJECT Get pointer:C1124(Object current:K67:2))
