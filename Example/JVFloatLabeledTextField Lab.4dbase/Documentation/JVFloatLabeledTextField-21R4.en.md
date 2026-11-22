@@ -240,7 +240,7 @@ File to open in 4D 21 R4:
 
 `Project/JVFloatLabeledTextField Lab.4DProject`
 
-The `Data/` folder is empty. On the first launch, 4D will offer to create a data file: create a new one. The catalog still has the original package name and `data_file_path=":JVFloatLabeledTextField.4DD"`. The original binary database is not in this branch: it is at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). There is no business table: only test forms.
+The `Data/` folder is empty. On the first launch, 4D will offer to create a data file: create a new one. The catalog still has `data_file_path=":JVFloatLabeledTextField.4DD"`. The original binary database is not in this branch: it is at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). There is no business table: only test forms.
 
 The `Components/JVFloatLabeledTextField.4dbase` folder holds the **compiled** 21 R4 component.
 
@@ -294,7 +294,7 @@ The host was compiled with 4D 21 R4, targets `x86_64_generic` and `arm64_macOS_l
 - `:C` / `:K` tokens removed from the component (`"tokenizedText": false`).
 - The `use_legacy_network_layer` setting was removed from the component. The component has no client/server code. The 21 R4 Compatibility page no longer lists that layer: it was removed in 21 R3. On the host, the attribute was set to `false`.
 - The binary example database was converted to project mode and renamed `JVFloatLabeledTextField Lab` (“v17” was removed from the names).
-- The original 4D v17 version stays in history, at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). It is no longer in this branch's tree. The host catalog still has `package_name="JVFloatLabeledTextFieldv17 Lab"`.
+- The original 4D v17 version stays in history, at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). It is no longer in this branch's tree.
 
 ### Syntax and internal API
 
@@ -362,7 +362,7 @@ The artefacts of this rebuild are in `JVFloatingLabel-build-2026-11-22/out/` (`C
 - **Client/server, Windows, compiled host.** The work and tests were done with 4D 21 R4 on macOS (MacBook Pro), interpreted host. No client/server, Windows, or compiled-host test is recorded here.
 - **User interface.** The menus and the focus colour change on `test_Form` were fixed in the sources. They were not clicked or observed in the 4D interface (screen capture was not available on the machine). The interpreted component had been validated in the host before conversion; the visual behaviour of the compiled package, in this project database, has not been confirmed in the same way.
 - **Signature.** The `buildApp.4DSettings` file used has `MacSignature` set to `False`. The package is not signed.
-- **Inherited host settings.** `legacy_print_rendering` and `standard_xpath` were left unchanged. The catalog still references the original package name and the old `.4DD`.
+- **Inherited host settings.** `legacy_print_rendering` and `standard_xpath` were left unchanged. The catalog still references the old `.4DD`.
 - **Host compiler warnings.** The seven retyping warnings in `Compiler_Variables` do not prevent compilation; they have not been cleaned up.
 
 ---
