@@ -13,37 +13,119 @@ This repository is the matrix project for **4D 21 R4**. The binary example `JVFl
 
 ## Installation dans un hôte 4D 21 R4
 
-Le fichier à ouvrir est `Project/JVFloatLabeledTextField.4DProject`. Les sources sont dans `Project/Sources/`, conformément à l'[architecture d'un projet](https://developer.4d.com/docs/21-R4/Project/architecture).
-
-Un composant interprété est un projet 4D dont le dossier porte le suffixe `.4dbase` et contient le dossier `Project`. Les composants placés dans le dossier `Components` de l'hôte (au même niveau que son dossier `Project`) sont chargés en priorité. Voir [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
-
-1. Copier ce dépôt dans un dossier nommé `JVFloatLabeledTextField.4dbase`.
-2. Placer ce dossier dans le dossier `Components` du projet hôte.
-3. Rouvrir l'hôte pour que 4D charge le composant.
-4. On peut aussi le déclarer dans `dependencies.json` de l'hôte (gestionnaire de dépendances). Hors du dossier `Components`, le chemin se déclare dans `environment4d.json`.
-
-Un hôte interprété accepte ce composant interprété. Un hôte compilé exige un composant compilé (fichier `.4DZ` produit par le générateur d'application). Voir [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components).
+Le fichier à ouvrir est `Project/JVFloatLabeledTextField.4DProject`. Les sources sont dans `Project/Sources/`, conformément à l'[architecture d'un projet](https://developer.4d.com/docs/21-R4/Project/architecture). `compatibilityVersion` reste **2140**.
 
 À la première ouverture, 4D peut demander un fichier de données. Créez-en un nouveau. Le composant ne stocke pas de données. Ne sélectionnez pas le `.4DD` du dossier Lab : 4D peut y écrire des fichiers annexes.
 
-`JVFloatLabeledTextField` et `JVF_Licence` sont partagées avec l'hôte (`//%attributes = {"shared":true}`), c'est-à-dire la propriété « Shared by components and host project ».
+`JVFloatLabeledTextField` et `JVF_Licence` sont partagées avec l'hôte (`//%attributes = {"shared":true}`), la case « Partagée entre les composants et le projet hôte ».
+
+### Compilation
+
+Les deux options de compatibilité doivent être actives, sinon le compilateur 21 R4 s'arrête avec : « Veuillez activer les propriétés de compatibilité de la base de données "Enregistrer les méthodes en Unicode" et "Utiliser la notation objet" ».
+
+Dans `Project/Sources/settings.4DSettings` :
+
+- `accept_dot_syntax="true"` — notation objet. Le code n'utilise pas encore le point.
+- `store_unicode_tokens="true"` — enregistrer les méthodes en Unicode.
+
+Ce second attribut est distinct de `"tokenizedText": false` dans le fichier `.4DProject`, qui garde les sources sans jetons `:C` / `:K` pour git. Avec les deux réglages, **Compiler le projet** a réussi pour **x86_64 et arm64** (4D 21 R4, macOS).
+
+### Composant interprété
+
+Un hôte interprété charge un composant interprété. Le dossier installé, au suffixe `.4dbase`, contient le dossier `Project` (et `Resources` s'il y a des ressources). Vérifié sous :
+
+`Components/JVFloatLabeledTextField.4dbase/Project`
+
+`Components/JVFloatLabeledTextField.4dbase/Resources`
+
+Ce dossier `Components` est celui de l'hôte, au même niveau que son dossier `Project`. Les composants qui s'y trouvent sont prioritaires. Voir [Dependencies](https://developer.4d.com/docs/21-R4/Project/components). On peut aussi le déclarer dans `dependencies.json`. Hors de `Components`, le chemin va dans `environment4d.json`.
+
+Dans l'hôte du Lab, le formulaire `test_Form1` fonctionne avec ce composant interprété.
+
+### Remplacer le composant v17
+
+4D 21 R4 ne charge pas l'ancien composant compilé v17 (fichier `.4DC`). Dans l'hôte Lab, il reste dans `Components/JVFloatLabeledTextFieldv17.4dbase/` et provoque l'erreur **-10508**, « Méthode projet introuvable », sur `JVFloatLabeledTextField`.
+
+Retirez cette copie **de l'hôte que vous exécutez** et mettez le paquet 21 R4 à la place. Le dossier `JVFloatLabeledTextFieldv17 Lab.4dbase` versionné dans ce dépôt ne doit pas être modifié ni supprimé : c'est l'exemple binaire d'origine.
+
+Un hôte compilé ne peut pas utiliser un composant interprété. Il lui faut le `.4DZ` décrit ci-dessous. Voir [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components).
+
+### Composant compilé
+
+D'après le [générateur d'application](https://developer.4d.com/docs/21-R4/Desktop/building) :
+
+1. Compiler le projet.
+2. Menu **Design > Build Application…** (dialogue « Générer application »).
+3. Page de la structure compilée : cocher **Générer un composant** (Build component), puis générer.
+
+4D écrit `<dossier destination>/Components/JVFloatLabeledTextField.4dbase/Contents/`. La génération 21 R4 sur macOS a produit :
+
+- `JVFloatLabeledTextField.4DZ`
+- `Info.plist`
+- `Libraries/lib4d-arm64.dylib`
+- `Resources`
+
+La même génération se lance avec `BUILD APPLICATION` et un fichier `Settings/buildApp.4DSettings` dont la clé `BuildComponent` vaut `True`. 4D crée ce fichier au premier usage du dialogue. Le fichier historique `BuildSettings/BuildApp.xml` est celui de la v17 : il contient un chemin de licence propre à une machine, ne pas le réutiliser.
+
+Installez ensuite le dossier `JVFloatLabeledTextField.4dbase` produit (celui qui contient `Contents`) dans le `Components` de l'hôte, à la place du composant v17.
 
 ## Install in a 4D 21 R4 host
 
-Open `Project/JVFloatLabeledTextField.4DProject`. Sources live in `Project/Sources/`, as described in the [project architecture](https://developer.4d.com/docs/21-R4/Project/architecture).
-
-An interpreted component is a 4D project whose folder name ends with `.4dbase` and which contains the `Project` folder. Components in the host's `Components` folder (next to its `Project` folder) are loaded first. See [Dependencies](https://developer.4d.com/docs/21-R4/Project/components).
-
-1. Copy this repository into a folder named `JVFloatLabeledTextField.4dbase`.
-2. Put that folder in the host project's `Components` folder.
-3. Reopen the host so 4D loads the component.
-4. You can instead declare it in the host's `dependencies.json` (Dependency manager). Outside `Components`, declare the path in `environment4d.json`.
-
-An interpreted host can load this interpreted component. A compiled host needs a compiled component (a `.4DZ` built with the application builder). See [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components).
+Open `Project/JVFloatLabeledTextField.4DProject`. Sources live in `Project/Sources/`, as described in the [project architecture](https://developer.4d.com/docs/21-R4/Project/architecture). `compatibilityVersion` stays **2140**.
 
 On the first open, 4D may ask for a data file. Create a new one. The component stores no data. Do not select the Lab folder's `.4DD`: 4D may write sidecar files next to it.
 
 `JVFloatLabeledTextField` and `JVF_Licence` are shared with the host (`//%attributes = {"shared":true}`), the "Shared by components and host project" property.
+
+### Compilation
+
+Both compatibility options must be on. Otherwise the 21 R4 compiler stops with: "Veuillez activer les propriétés de compatibilité de la base de données 'Enregistrer les méthodes en Unicode' et 'Utiliser la notation objet'".
+
+In `Project/Sources/settings.4DSettings`:
+
+- `accept_dot_syntax="true"` — object notation. The methods do not use dots yet.
+- `store_unicode_tokens="true"` — save methods in Unicode.
+
+That second attribute is separate from `"tokenizedText": false` in the `.4DProject` file, which keeps the git sources free of `:C` / `:K` tokens. With both settings, **Compile project** succeeded for **x86_64 and arm64** (4D 21 R4, macOS).
+
+### Interpreted component
+
+An interpreted host loads an interpreted component. The installed folder, suffixed `.4dbase`, contains the `Project` folder (and `Resources` when there are resources). Verified as:
+
+`Components/JVFloatLabeledTextField.4dbase/Project`
+
+`Components/JVFloatLabeledTextField.4dbase/Resources`
+
+That `Components` folder is the host's, next to its `Project` folder. Components stored there have priority. See [Dependencies](https://developer.4d.com/docs/21-R4/Project/components). You can also declare it in `dependencies.json`. Outside `Components`, put the path in `environment4d.json`.
+
+In the Lab host, form `test_Form1` works with this interpreted component.
+
+### Replace the v17 component
+
+4D 21 R4 does not load the old compiled v17 component (the `.4DC` file). In the Lab host it still sits in `Components/JVFloatLabeledTextFieldv17.4dbase/` and raises error **-10508**, "Méthode projet introuvable", on `JVFloatLabeledTextField`.
+
+Remove that copy **from the host you are running** and put the 21 R4 package in its place. Do not modify or delete the `JVFloatLabeledTextFieldv17 Lab.4dbase` folder stored in this repository: it is the original binary example.
+
+A compiled host cannot use an interpreted component. It needs the `.4DZ` below. See [Developing components](https://developer.4d.com/docs/21-R4/Extensions/develop-components).
+
+### Compiled component
+
+From the [application builder](https://developer.4d.com/docs/21-R4/Desktop/building):
+
+1. Compile the project.
+2. **Design > Build Application...**
+3. On the compiled-structure page, check **Build component**, then build.
+
+4D writes `<destination folder>/Components/JVFloatLabeledTextField.4dbase/Contents/`. The 21 R4 macOS build produced:
+
+- `JVFloatLabeledTextField.4DZ`
+- `Info.plist`
+- `Libraries/lib4d-arm64.dylib`
+- `Resources`
+
+The same build can be launched with `BUILD APPLICATION` and a `Settings/buildApp.4DSettings` file whose `BuildComponent` key is `True`. 4D creates that file the first time you use the dialog. The historical `BuildSettings/BuildApp.xml` is the v17 file: it contains a machine-specific licence path, so do not reuse it.
+
+Then install the generated `JVFloatLabeledTextField.4dbase` folder (the one that contains `Contents`) into the host's `Components` folder, in place of the v17 component.
 
 ## Événements et appel
 
@@ -151,7 +233,7 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - Méthodes partagées conservées.
 - `#DECLARE`, variables locales typées avec `var`, `Form event code` à la place de `Form event`.
 - Jetons `:C` / `:K` retirés (`"tokenizedText": false`).
-- Notation objet activée (`accept_dot_syntax`). Le code n'utilise pas encore le point.
+- Notation objet activée (`accept_dot_syntax`) et méthodes enregistrées en Unicode (`store_unicode_tokens`). Les deux sont exigées par le compilateur 21 R4. Les sources git restent sans jetons `:C` / `:K`. Compilation x86_64 et arm64 vérifiée, ainsi que le formulaire hôte `test_Form1` avec le composant interprété.
 - Réglage `use_legacy_network_layer` retiré. Le composant n'a pas de code client-serveur. La page Compatibilité 21 R4 ne liste plus cette couche : elle a été retirée en 21 R3.
 - Nom d'étiquette unique par objet de formulaire.
 - La valeur numérique 0 affiche l'étiquette. Un champ SQL NULL la masque.
@@ -168,7 +250,7 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 - Shared methods kept.
 - `#DECLARE`, locals typed with `var`, `Form event code` instead of `Form event`.
 - `:C` / `:K` tokens removed (`"tokenizedText": false`).
-- Object notation turned on (`accept_dot_syntax`). The code does not use dots yet.
+- Object notation turned on (`accept_dot_syntax`) and methods saved in Unicode (`store_unicode_tokens`). The 21 R4 compiler requires both. Git sources stay free of `:C` / `:K` tokens. x86_64 and arm64 compilation verified, and host form `test_Form1` verified with the interpreted component.
 - `use_legacy_network_layer` removed. The component has no client/server code. The 21 R4 Compatibility page no longer lists that layer: it was removed in 21 R3.
 - One label name per form object.
 - Numeric 0 shows the label. An SQL NULL field hides it.

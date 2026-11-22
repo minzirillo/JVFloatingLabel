@@ -12,7 +12,7 @@
 			</remote>
 		</web>
 		<database>
-			<misc accept_dot_syntax="true" allow_json_dates="false" store_unicode_tokens="false"/>
+			<misc accept_dot_syntax="true" allow_json_dates="false" store_unicode_tokens="true"/>
 		</database>
 		<deployment>
 			<options generate_applications_for_read_only_deployment="false"/>
