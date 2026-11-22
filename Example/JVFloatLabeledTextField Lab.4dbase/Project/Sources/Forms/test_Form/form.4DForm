@@ -1,0 +1,289 @@
+{
+	"destination": "detailScreen",
+	"memorizeGeometry": true,
+	"rightMargin": 19,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Button1": {
+					"type": "button",
+					"top": 323,
+					"left": 21,
+					"width": 140,
+					"height": 49,
+					"dataSource": "Button",
+					"text": "Reset all",
+					"class": "Field1",
+					"method": "ObjectMethods/Button1.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Image12": {
+					"type": "picture",
+					"top": 372,
+					"left": 406,
+					"width": 0,
+					"height": 0,
+					"pictureFormat": "scaled"
+				},
+				"Title_obj": {
+					"type": "input",
+					"top": 22,
+					"left": 20,
+					"width": 539,
+					"height": 34,
+					"stroke": "#000000",
+					"class": "Field1",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "Title",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Title_obj.4dm",
+					"events": [
+					  "onLoad",
+					  "onClick",
+					  "onLosingFocus",
+					  "onGettingFocus",
+					  "onDataChange",
+					  "onAfterEdit"
+					]
+				},
+				"Line": {
+					"type": "line",
+					"top": 57,
+					"left": 21,
+					"width": 538,
+					"stroke": "#AAAAAA"
+				},
+				"Price_obj": {
+					"type": "input",
+					"top": 82,
+					"left": 20,
+					"width": 127,
+					"height": 34,
+					"stroke": "#AAAAAA",
+					"class": "Field1",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"contextMenu": "none",
+					"placeholder": "Price",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Price_obj.4dm",
+					"events": [
+					  "onLoad",
+					  "onClick",
+					  "onLosingFocus",
+					  "onGettingFocus",
+					  "onDataChange",
+					  "onAfterEdit"
+					]
+				},
+				"Sp_locat_obj": {
+					"type": "input",
+					"top": 82,
+					"left": 162,
+					"width": 397,
+					"height": 34,
+					"stroke": "#AAAAAA",
+					"class": "Field1",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "Specific Location (optional)",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Sp_locat_obj.4dm",
+					"events": [
+					  "onLoad",
+					  "onClick",
+					  "onLosingFocus",
+					  "onGettingFocus",
+					  "onDataChange",
+					  "onAfterEdit"
+					]
+				},
+				"Date_obj": {
+					"type": "input",
+					"top": 142,
+					"left": 20,
+					"width": 193,
+					"height": 34,
+					"stroke": "#AAAAAA",
+					"class": "Field1",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"contextMenu": "none",
+					"placeholder": "Birthday",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Date_obj.4dm",
+					"events": [
+					  "onLoad",
+					  "onClick",
+					  "onLosingFocus",
+					  "onGettingFocus",
+					  "onDataChange",
+					  "onAfterEdit"
+					]
+				},
+				"Line1": {
+					"type": "line",
+					"top": 117,
+					"left": 21,
+					"width": 538,
+					"stroke": "#AAAAAA"
+				},
+				"Line2": {
+					"type": "line",
+					"top": 57,
+					"left": 148,
+					"height": 60,
+					"stroke": "#AAAAAA"
+				},
+				"Time_obj": {
+					"type": "input",
+					"top": 142,
+					"left": 227,
+					"width": 332,
+					"height": 34,
+					"stroke": "#AAAAAA",
+					"class": "Field1",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"contextMenu": "none",
+					"placeholder": "Birthday time (optional)",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Time_obj.4dm",
+					"events": [
+					  "onLoad",
+					  "onClick",
+					  "onLosingFocus",
+					  "onGettingFocus",
+					  "onDataChange",
+					  "onAfterEdit"
+					]
+				},
+				"Description_obj": {
+					"type": "input",
+					"top": 201,
+					"left": 20,
+					"width": 538,
+					"height": 102,
+					"stroke": "#AAAAAA",
+					"class": "Field1",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "Description",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Description_obj.4dm",
+					"events": [
+					  "onLoad",
+					  "onClick",
+					  "onLosingFocus",
+					  "onGettingFocus",
+					  "onDataChange",
+					  "onAfterEdit"
+					]
+				},
+				"Button": {
+					"type": "button",
+					"top": 323,
+					"left": 406,
+					"width": 152,
+					"height": 49,
+					"dataSource": "Button",
+					"action": "cancel",
+					"text": "Close",
+					"class": "Field1",
+					"events": [
+						"onClick"
+					]
+				},
+				"JVF_obj": {
+					"type": "input",
+					"top": 5,
+					"left": 67,
+					"width": 101,
+					"height": 11,
+					"stroke": "#2F83FB",
+					"class": "JVFloatLabeledTextField",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none"
+				},
+				"Line3": {
+					"type": "line",
+					"top": 176,
+					"left": 21,
+					"width": 538,
+					"height": 1,
+					"stroke": "#AAAAAA"
+				},
+				"Line4": {
+					"type": "line",
+					"top": 117,
+					"left": 214,
+					"height": 60,
+					"stroke": "#AAAAAA"
+				},
+				"btn_obj": {
+					"type": "button",
+					"top": 323,
+					"left": 336,
+					"width": 50,
+					"height": 49,
+					"text": "?",
+					"focusable": false,
+					"method": "ObjectMethods/btn_obj.4dm",
+					"events": [
+						"onClick"
+					]
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,25 @@
+.default {
+	font-family: Segoe UI;
+	font-size: 12px;
+}
+
+.Field1 {
+	font-family: Segoe UI Light;
+	font-size: 30px;
+}
+
+.Field2 {
+	font-family: Segoe UI Light;
+	font-size: 13px;
+}
+
+.JVFloatLabeledTextField {
+	font-family: Segoe UI;
+	font-size: 10px;
+}
+
+.JVFloatLabeledTextField_min {
+	font-family: Segoe UI;
+	font-size: 8px;
+}
+

@@ -1,0 +1,25 @@
+.default {
+	font-family: Lucida Grande;
+	font-size: 13px;
+}
+
+.Field1 {
+	font-family: Helvetica Neue UltraLight;
+	font-size: 30px;
+}
+
+.Field2 {
+	font-family: Helvetica Neue UltraLight;
+	font-size: 13px;
+}
+
+.JVFloatLabeledTextField {
+	font-family: Lucida Grande;
+	font-size: 10px;
+}
+
+.JVFloatLabeledTextField_min {
+	font-family: Lucida Grande;
+	font-size: 8px;
+}
+

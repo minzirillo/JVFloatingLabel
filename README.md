@@ -11,6 +11,10 @@ Ce dépôt est le projet matrice pour **4D 21 R4**. La base binaire d'exemple `J
 
 This repository is the matrix project for **4D 21 R4**. The binary example `JVFloatLabeledTextFieldv17 Lab.4dbase` is unchanged. It is a v17 database, not the project to open.
 
+Une base hôte d'exemple convertie en mode projet 4D 21 R4 se trouve dans [`Example/JVFloatLabeledTextField Lab.4dbase/`](Example/JVFloatLabeledTextField%20Lab.4dbase/). La documentation complète (français et anglais) est dans [`Documentation/`](Documentation/).
+
+A converted 4D 21 R4 project-mode host example is in [`Example/JVFloatLabeledTextField Lab.4dbase/`](Example/JVFloatLabeledTextField%20Lab.4dbase/). The full documentation (French and English) is in [`Documentation/`](Documentation/).
+
 ## Installation dans un hôte 4D 21 R4
 
 Le fichier à ouvrir est `Project/JVFloatLabeledTextField.4DProject`. Les sources sont dans `Project/Sources/`, conformément à l'[architecture d'un projet](https://developer.4d.com/docs/21-R4/Project/architecture). `compatibilityVersion` reste **2140**.
