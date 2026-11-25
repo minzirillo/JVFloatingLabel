@@ -11,9 +11,9 @@ Ce dépôt est le projet matrice pour **4D 21 R4**.
 
 This repository is the matrix project for **4D 21 R4**.
 
-**Historique.** La version d’origine 4D v17 est disponible au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
+**Historique.** La version d’origine 4D v17 est disponible au tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). Le journal de la branche `migration/21R4` est dans [`MIGRATION-21R4.md`](MIGRATION-21R4.md).
 
-**History.** The original 4D v17 version is available at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17).
+**History.** The original 4D v17 version is available at tag [`v17`](https://github.com/minzirillo/JVFloatingLabel/tree/v17). The `migration/21R4` branch notes are in [`MIGRATION-21R4.md`](MIGRATION-21R4.md).
 
 Une base hôte d'exemple convertie en mode projet 4D 21 R4 se trouve dans [`Example/JVFloatLabeledTextField Lab.4dbase/`](Example/JVFloatLabeledTextField%20Lab.4dbase/). La documentation complète (français et anglais) est dans [`Documentation/`](Documentation/).
 
@@ -33,7 +33,7 @@ Le suffixe `.4dbase` est exigé pour installer un composant interprété dans le
 
 Le nom déclaré est `JVFloatLabeledTextField`, celui du fichier `.4DProject`. Il ne dépend pas du nom du dossier de clone.
 
-Les méthodes objet de `test_Form` et de `test_Form1` appellent `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (jetons `:C1124` et `:K67:2` dans les sources de l'hôte). Sans composant chargé, le nom seul est une variable : erreur 37, « Il manque le signe d'affectation (:=) ».
+Les méthodes objet de `test_Form` et de `test_Form1` appellent `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. Sans composant chargé, le nom seul est une variable : erreur 37, « Il manque le signe d'affectation (:=) ».
 
 `test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Un clone s'exécute ainsi : la dépendance pointe vers les sources du composant.
 
@@ -57,7 +57,7 @@ The `.4dbase` suffix is required to install an interpreted component in the `Com
 
 The declared name is `JVFloatLabeledTextField`, the `.4DProject` file name. It does not depend on the clone folder's name.
 
-Object methods on `test_Form` and `test_Form1` call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (tokens `:C1124` and `:K67:2` in the host sources). With no component loaded, a bare name is a variable: error 37, "Il manque le signe d'affectation (:=)".
+Object methods on `test_Form` and `test_Form1` call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. With no component loaded, a bare name is a variable: error 37, "Il manque le signe d'affectation (:=)".
 
 `test_Form` and `test_Form1` were validated in interpreted mode with 4D 21 R4 on macOS. A clone runs that way: the dependency points at the component sources.
 
@@ -81,7 +81,7 @@ Les deux options de compatibilité doivent être actives, sinon le compilateur 2
 
 Dans `Project/Sources/settings.4DSettings` :
 
-- `accept_dot_syntax="true"` — notation objet. Le code n'utilise pas encore le point.
+- `accept_dot_syntax="true"` — notation objet. `JVF_Licence` l'utilise (`collection.join`).
 - `store_unicode_tokens="true"` — enregistrer les méthodes en Unicode.
 
 Ce second attribut est distinct de `"tokenizedText": false` dans le fichier `.4DProject`, qui garde les sources sans jetons `:C` / `:K` pour git. Avec les deux réglages, **Compiler le projet** a réussi pour **x86_64 et arm64** (4D 21 R4, macOS).
@@ -139,7 +139,7 @@ Both compatibility options must be on. Otherwise the 21 R4 compiler stops with: 
 
 In `Project/Sources/settings.4DSettings`:
 
-- `accept_dot_syntax="true"` — object notation. The methods do not use dots yet.
+- `accept_dot_syntax="true"` — object notation. `JVF_Licence` uses it (`collection.join`).
 - `store_unicode_tokens="true"` — save methods in Unicode.
 
 That second attribute is separate from `"tokenizedText": false` in the `.4DProject` file, which keeps the git sources free of `:C` / `:K` tokens. With both settings, **Compile project** succeeded for **x86_64 and arm64** (4D 21 R4, macOS).
@@ -283,6 +283,14 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 
 ## Journal / Changelog
 
+### 2026-11-25 — syntaxe directe sur `migration/21R4`
+
+- `&&`, `||`, `return` et le ternaire dans `JVFloatLabeledTextField`. Noms partagés et règles d'étiquette inchangés.
+- `JVF_Licence` construit le même HTML avec `[]`, `join("")` et `{licence: $licence_t}`.
+- L'hôte d'exemple déclare ses variables avec `var`. Les jetons `:C` / `:K` sortent des méthodes actives. `"tokenizedText": false` est ajouté au `.4DProject` de l'hôte.
+- `Info.plist` : `com.4d.minSupportedVersion` = `21R4`. Détail bilingue : [`MIGRATION-21R4.md`](MIGRATION-21R4.md).
+- Pas de compilation dans cet environnement. Pas de tag, pas de release.
+
 ### 2026-11-22 — projet 4D 21 R4
 
 - Sources déplacées dans `Project/Sources/`, avec `Project/JVFloatLabeledTextField.4DProject` (`compatibilityVersion` 2140).
@@ -302,6 +310,14 @@ After input, a cleared numeric field is stored as 0 on validation, so the label 
 ### 2018 — v17
 
 - Première version binaire, Maurice Inzirillo, AJAR SA.
+
+### 2026-11-25 — direct typing on `migration/21R4`
+
+- `&&`, `||`, `return`, and the ternary operator in `JVFloatLabeledTextField`. Shared names and label rules unchanged.
+- `JVF_Licence` builds the same HTML with `[]`, `join("")`, and `{licence: $licence_t}`.
+- The example host declares its variables with `var`. `:C` / `:K` tokens leave the active methods. `"tokenizedText": false` is set on the host `.4DProject`.
+- `Info.plist`: `com.4d.minSupportedVersion` = `21R4`. Bilingual detail: [`MIGRATION-21R4.md`](MIGRATION-21R4.md).
+- No compilation in this environment. No tag, no release.
 
 ### 2026-11-22 — 4D 21 R4 project
 

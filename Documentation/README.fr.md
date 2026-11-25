@@ -10,7 +10,7 @@ Le composant est déclaré dans `Project/Sources/dependencies.json` (nom `JVFloa
 
 Le suffixe `.4dbase` n’est exigé que pour une copie dans le dossier `Components` de l’hôte ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). Une dépendance locale vise « the project root folder of the component » ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). L’ajout d’une dépendance accepte un `.4DZ` ou un `.4DProject` ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). Deux niveaux au-dessus du fichier restent dans la portée d’un chemin relatif ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components)).
 
-Les méthodes objet de `test_Form` et de `test_Form1` appellent `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (jetons `:C1124` et `:K67:2` dans les sources). Sans composant chargé, le nom seul provoque l’erreur 37.
+Les méthodes objet de `test_Form` et de `test_Form1` appellent `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. Sans composant chargé, le nom seul provoque l’erreur 37.
 
 `test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Un clone s’exécute ainsi : la dépendance pointe vers les sources du composant.
 

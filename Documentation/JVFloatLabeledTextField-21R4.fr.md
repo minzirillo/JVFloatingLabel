@@ -35,9 +35,9 @@ Le projet matrice du composant est `Project/JVFloatLabeledTextField.4DProject`. 
 | --- | --- |
 | Version cible | 4D 21 R4 (`/Applications/4D 21 R4` sur macOS) |
 | Fichier projet du composant | `compatibilityVersion` **2140**, `"tokenizedText": false` |
-| Fichier projet de la base d’exemple | `compatibilityVersion` **2140** |
+| Fichier projet de la base d’exemple | `compatibilityVersion` **2140**, `"tokenizedText": false` |
 | Mode | projet uniquement (plus de structure binaire `.4DB` / `.4DC`) |
-| Notation objet (composant et hôte) | `accept_dot_syntax="true"` dans `Project/Sources/settings.4DSettings`. Le code du composant n’utilise pas encore la notation point. |
+| Notation objet (composant et hôte) | `accept_dot_syntax="true"` dans `Project/Sources/settings.4DSettings`. `JVF_Licence` appelle `collection.join`. |
 | Jetons Unicode (composant et hôte) | `store_unicode_tokens="true"` |
 | Couche réseau héritée (hôte) | `use_legacy_network_layer="false"` |
 | Compilation du composant | option `fat_binary="true"` ; cibles utilisées : `x86_64_generic` et `arm64_macOS_lib` |
@@ -57,7 +57,7 @@ La base d’exemple a été convertie par le menu Fichier > Exporter > Structure
 
 Ces réglages sont maintenant aussi écrits explicitement dans le `Project/Sources/settings.4DSettings` de l’hôte : `accept_dot_syntax="true"` et `store_unicode_tokens="true"` dans `<database><misc>`, sur le modèle du fichier de réglages du composant. La documentation 4D 21 R4 décrit ces options sous leur nom d’interface (notamment « Save methods as Unicode » et « Use object notation to access object properties ») ; elle ne publie pas le nom des attributs XML. Les attributs ajoutés sont ceux déjà présents dans le composant, qui a compilé avec succès.
 
-`use_legacy_network_layer` a été passé à `false`. Les [notes de version](https://developer.4d.com/docs/Notes/updates) indiquent que la couche réseau Legacy n’est plus prise en charge à partir de 4D 21 R3, et que les projets sont automatiquement basculés vers ServerNet. Le fichier hôte conserve encore `legacy_print_rendering="true"` et `standard_xpath="false"`. Les méthodes de l’hôte ont encore des jetons `:C` / `:K` ; le `.4DProject` de l’hôte n’a pas la clé `"tokenizedText": false`.
+`use_legacy_network_layer` a été passé à `false`. Les [notes de version](https://developer.4d.com/docs/Notes/updates) indiquent que la couche réseau Legacy n’est plus prise en charge à partir de 4D 21 R3, et que les projets sont automatiquement basculés vers ServerNet. Le fichier hôte conserve encore `legacy_print_rendering="true"` et `standard_xpath="false"`. Les méthodes actives de l’hôte n’ont plus de jetons `:C` / `:K`. Le `.4DProject` de l’hôte a `"tokenizedText": false`. Le dossier `Project/Trash` garde l’ancienne copie, hors du projet actif.
 
 Le fichier modifié est `Project/Sources/settings.4DSettings` (réglages de structure). Il n’existe pas de `Settings/settings.4DSettings` dans cette base.
 
@@ -275,7 +275,7 @@ Deux formulaires projet, tous deux avec un modèle `JVF_obj`, un bouton **Reset 
 
 Champs des deux formulaires et leurs placeholders : `Title_obj` (Title), `Price_obj` (Price), `Sp_locat_obj` (Specific Location (optional)), `Date_obj` (Birthday), `Time_obj` (Birthday time (optional)), `Description_obj` (Description).
 
-Dans les sources de l’hôte, l’appel des deux formulaires est `JVFloatLabeledTextField(OBJECT Get pointer:C1124(Object current:K67:2))`. Le paramètre reste optionnel dans la méthode du composant (`#DECLARE`) : s’il est omis ou nil, elle utilise `OBJECT Get pointer(Object current)`. Les formulaires le passent pour que la ligne soit un appel de méthode. Sans composant chargé, le nom seul est analysé comme une variable (erreur 37, « Il manque le signe d’affectation (:=) »).
+Dans les sources de l’hôte, l’appel des deux formulaires est `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. Le paramètre reste optionnel dans la méthode du composant (`#DECLARE`) : s’il est omis ou nil, elle utilise `OBJECT Get pointer(Object current)`. Les formulaires le passent pour que la ligne soit un appel de méthode. Sans composant chargé, le nom seul est analysé comme une variable (erreur 37, « Il manque le signe d’affectation (:=) »).
 
 Les événements objet de `test_Form` ont été alignés sur ceux de `test_Form1`, afin que le changement de couleur au focus et au blur fonctionne aussi sur la variante large.
 
@@ -286,8 +286,8 @@ Dans les deux formulaires, `JVF_obj` est sur la page 1, en haut (`top` 5, hauteu
 - `Reset_Var` — obtient un pointeur sur chaque objet nommé, fait `CLEAR VARIABLE`, puis rappelle `JVFloatLabeledTextField` avec ce pointeur.
 - `Open_test_Form` — ouvre `test_Form` : `Open form window("test_Form"; Plain form window; Horizontally centered; Vertically centered)`, puis `DIALOG("test_Form")` et `CLOSE WINDOW` ([Open form window](https://developer.4d.com/docs/21-R4/commands/open-form-window), [DIALOG](https://developer.4d.com/docs/21-R4/commands/dialog), [CLOSE WINDOW](https://developer.4d.com/docs/21-R4/commands/close-window)).
 - `Open_test_Form1` — même schéma pour `test_Form1`.
-- `Compiler_Variables` — déclare `Button` (réel), `Description`, `Specific_location`, `Title` (texte), `vDate` (date), `Price` (réel), `vTime` (heure). Méthode invisible.
-- `Compiler_Methods` — la redéclaration `C_POINTER(JVFloatLabeledTextField; $1)` est commentée : le composant déclare déjà le paramètre avec `#DECLARE`.
+- `Compiler_Variables` — déclare avec `var` : `Button` et `Price` (réel), `Description`, `Specific_location`, `Title` (texte), `vDate` (date), `vTime` (heure). Méthode invisible.
+- `Compiler_Methods` — ne redéclare pas le paramètre. Le composant le déclare avec `#DECLARE`.
 - `onStartup` — fichier présent, corps vide.
 
 Le dossier `Project/Trash/Methods/` contient une ancienne copie de `JVFloatLabeledTextField` (copie hôte d’origine, conservée à la conversion) et une méthode `(test)`. Elles ne font pas partie du projet actif.
@@ -387,7 +387,7 @@ Les artefacts de cette reconstruction sont dans `JVFloatingLabel-build-2026-11-2
 - **Interface.** `test_Form` et `test_Form1` ont été validés en mode interprété avec 4D 21 R4 sur macOS. Le comportement visuel du paquet compilé, dans cette base projet, n’a pas été confirmé de la même façon.
 - **Signature.** Le `buildApp.4DSettings` utilisé a `MacSignature` à `False`. Le paquet n’est pas signé.
 - **Réglages hérités de l’hôte.** `legacy_print_rendering` et `standard_xpath` n’ont pas été modifiés. Le catalogue référence encore l’ancien `.4DD`.
-- **Avertissements du compilateur hôte.** Les sept retypages de `Compiler_Variables` n’empêchent pas la compilation ; ils n’ont pas été nettoyés.
+- **Avertissements du compilateur hôte.** Sept retypages (520.19) avaient été vus dans `Compiler_Variables` avant le passage à `var`. Ils n’ont pas été revérifiés : 4D n’a pas été relancé.
 
 ---
 

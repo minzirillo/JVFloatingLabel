@@ -6,6 +6,12 @@
   https://developer.4d.com/docs/21-R4/commands/build-application
   Keys /Preferences4D/BuildApp/BuildComponent and BuildApplicationName
   (4D XML Keys BuildApplication). No licence path.
+  No destination folder is stored here: set BuildMacDestFolder or
+  BuildWinDestFolder locally when building. Do not put a licence path.
+  A GitHub dependency release is a separate step. The asset zip must be
+  named JVFloatingLabel.zip (the repository name). This file does not
+  create that release.
+  https://developer.4d.com/docs/21-R4/Project/components#configuring-a-github-repository
 -->
 <Preferences4D>
   <BuildApp>

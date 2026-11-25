@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleName</key>
+	<string>JVFloatLabeledTextField</string>
+	<key>CFBundleDisplayName</key>
+	<string>JVFloatLabeledTextField</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright 2018 Maurice Inzirillo - AJAR SA</string>
+	<key>com.4d.minSupportedVersion</key>
+	<string>21R4</string>
+</dict>
+</plist>

@@ -1,4 +1,5 @@
 //%attributes = {"invisible":true}
-// Codesky 22.11.2026 : JVFloatLabeledTextField est une méthode du composant,
-// elle déclare elle-même ses paramètres (#DECLARE). Ne pas la redéclarer ici.
-// C_POINTER(JVFloatLabeledTextField; $1)
+// JVFloatLabeledTextField est une méthode du composant.
+// Elle déclare son paramètre avec #DECLARE. Ne pas le redéclarer ici.
+// JVFloatLabeledTextField is a component method.
+// It declares its parameter with #DECLARE. Do not redeclare it here.
