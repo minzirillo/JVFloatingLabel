@@ -10,7 +10,7 @@ The component is declared in `Project/Sources/dependencies.json` (name `JVFloatL
 
 The `.4dbase` suffix is required only for a copy in the host’s `Components` folder ([Package folder](https://developer.4d.com/docs/21-R4/Project/components#package-folder)). A local dependency points at “the project root folder of the component” ([Local components](https://developer.4d.com/docs/21-R4/Project/components#local-components)). Adding a dependency accepts a `.4DZ` or a `.4DProject` ([Adding a local dependency](https://developer.4d.com/docs/21-R4/Project/components#adding-a-local-dependency)). Two levels above the file stay inside the relative-path range ([Creating components](https://developer.4d.com/docs/21-R4/Extensions/develop-components#creating-components)).
 
-Object methods on `test_Form` and `test_Form1` call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))` (tokens `:C1124` and `:K67:2` in the sources). With no component loaded, the bare name raises error 37.
+Object methods on `test_Form` and `test_Form1` call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. With no component loaded, the bare name raises error 37.
 
 `test_Form` and `test_Form1` were validated in interpreted mode with 4D 21 R4 on macOS. A clone runs that way: the dependency points at the component sources.
 

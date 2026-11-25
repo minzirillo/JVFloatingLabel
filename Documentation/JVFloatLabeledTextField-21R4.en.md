@@ -35,9 +35,9 @@ The component matrix project is `Project/JVFloatLabeledTextField.4DProject`. Sou
 | --- | --- |
 | Target version | 4D 21 R4 (`/Applications/4D 21 R4` on macOS) |
 | Component project file | `compatibilityVersion` **2140**, `"tokenizedText": false` |
-| Example database project file | `compatibilityVersion` **2140** |
+| Example database project file | `compatibilityVersion` **2140**, `"tokenizedText": false` |
 | Mode | project mode only (no more `.4DB` / `.4DC` binary structure) |
-| Object notation (component and host) | `accept_dot_syntax="true"` in `Project/Sources/settings.4DSettings`. The component code does not use dot notation yet. |
+| Object notation (component and host) | `accept_dot_syntax="true"` in `Project/Sources/settings.4DSettings`. `JVF_Licence` calls `collection.join`. |
 | Unicode tokens (component and host) | `store_unicode_tokens="true"` |
 | Legacy network layer (host) | `use_legacy_network_layer="false"` |
 | Component compilation | `fat_binary="true"` option; targets used: `x86_64_generic` and `arm64_macOS_lib` |
@@ -57,7 +57,7 @@ The example database was converted with File > Export > Structure to project. Th
 
 These settings are now also written explicitly in the host’s `Project/Sources/settings.4DSettings`: `accept_dot_syntax="true"` and `store_unicode_tokens="true"` on `<database><misc>`, following the component settings file. The 4D 21 R4 documentation describes these options under their user-interface names (in particular “Save methods as Unicode” and “Use object notation to access object properties”); it does not publish the XML attribute names. The attributes added are those already present in the component, which compiled successfully.
 
-`use_legacy_network_layer` was set to `false`. The [release notes](https://developer.4d.com/docs/Notes/updates) state that the Legacy network layer is no longer supported as of 4D 21 R3, and that projects are automatically switched to ServerNet. The host file still keeps `legacy_print_rendering="true"` and `standard_xpath="false"`. Host methods still contain `:C` / `:K` tokens; the host `.4DProject` does not have `"tokenizedText": false`.
+`use_legacy_network_layer` was set to `false`. The [release notes](https://developer.4d.com/docs/Notes/updates) state that the Legacy network layer is no longer supported as of 4D 21 R3, and that projects are automatically switched to ServerNet. The host file still keeps `legacy_print_rendering="true"` and `standard_xpath="false"`. Active host methods no longer contain `:C` / `:K` tokens. The host `.4DProject` has `"tokenizedText": false`. `Project/Trash` keeps the old copy, outside the active project.
 
 The file that was edited is `Project/Sources/settings.4DSettings` (structure settings). There is no `Settings/settings.4DSettings` in this database.
 
@@ -275,7 +275,7 @@ Two project forms, both with a `JVF_obj` template, a **Reset all** button (`Rese
 
 Fields on both forms and their placeholders: `Title_obj` (Title), `Price_obj` (Price), `Sp_locat_obj` (Specific Location (optional)), `Date_obj` (Birthday), `Time_obj` (Birthday time (optional)), `Description_obj` (Description).
 
-In the host sources, both forms call `JVFloatLabeledTextField(OBJECT Get pointer:C1124(Object current:K67:2))`. The parameter stays optional in the component method (`#DECLARE`): when it is omitted or nil, the method uses `OBJECT Get pointer(Object current)`. The forms pass it so the line is a method call. With no component loaded, a bare name is parsed as a variable (error 37, "Il manque le signe d'affectation (:=)").
+In the host sources, both forms call `JVFloatLabeledTextField(OBJECT Get pointer(Object current))`. The parameter stays optional in the component method (`#DECLARE`): when it is omitted or nil, the method uses `OBJECT Get pointer(Object current)`. The forms pass it so the line is a method call. With no component loaded, a bare name is parsed as a variable (error 37, "Il manque le signe d'affectation (:=)").
 
 Object events on `test_Form` were aligned with those on `test_Form1`, so the colour change on focus and blur also works on the large variant.
 
@@ -286,8 +286,8 @@ In both forms, `JVF_obj` is on page 1, at the top (`top` 5, height 11), not ente
 - `Reset_Var` — gets a pointer to each named object, calls `CLEAR VARIABLE`, then calls `JVFloatLabeledTextField` again with that pointer.
 - `Open_test_Form` — opens `test_Form`: `Open form window("test_Form"; Plain form window; Horizontally centered; Vertically centered)`, then `DIALOG("test_Form")` and `CLOSE WINDOW` ([Open form window](https://developer.4d.com/docs/21-R4/commands/open-form-window), [DIALOG](https://developer.4d.com/docs/21-R4/commands/dialog), [CLOSE WINDOW](https://developer.4d.com/docs/21-R4/commands/close-window)).
 - `Open_test_Form1` — the same pattern for `test_Form1`.
-- `Compiler_Variables` — declares `Button` (real), `Description`, `Specific_location`, `Title` (text), `vDate` (date), `Price` (real), `vTime` (time). Invisible method.
-- `Compiler_Methods` — the `C_POINTER(JVFloatLabeledTextField; $1)` redeclaration is commented out: the component already declares the parameter with `#DECLARE`.
+- `Compiler_Variables` — declared with `var`: `Button` and `Price` (real), `Description`, `Specific_location`, `Title` (text), `vDate` (date), `vTime` (time). Invisible method.
+- `Compiler_Methods` — does not redeclare the parameter. The component declares it with `#DECLARE`.
 - `onStartup` — the file is present, the body is empty.
 
 The `Project/Trash/Methods/` folder contains an old copy of `JVFloatLabeledTextField` (the original host copy, kept at conversion time) and a `(test)` method. They are not part of the active project.
@@ -387,7 +387,7 @@ The artefacts of this rebuild are in `JVFloatingLabel-build-2026-11-22/out/` (`C
 - **User interface.** `test_Form` and `test_Form1` were validated in interpreted mode with 4D 21 R4 on macOS. The visual behaviour of the compiled package, in this project database, has not been confirmed in the same way.
 - **Signature.** The `buildApp.4DSettings` file used has `MacSignature` set to `False`. The package is not signed.
 - **Inherited host settings.** `legacy_print_rendering` and `standard_xpath` were left unchanged. The catalog still references the old `.4DD`.
-- **Host compiler warnings.** The seven retyping warnings in `Compiler_Variables` do not prevent compilation; they have not been cleaned up.
+- **Host compiler warnings.** Seven retyping warnings (520.19) were seen in `Compiler_Variables` before the switch to `var`. They were not checked again: 4D was not run again.
 
 ---
 
