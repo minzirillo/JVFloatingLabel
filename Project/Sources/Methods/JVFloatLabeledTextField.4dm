@@ -108,7 +108,11 @@ End if
 $baseName:=($baseName="") ? "JVF" : $baseName
 $labelName:=$baseName+"_JVF_obj"
 
-$isNull:=($fieldNum>0) ? Is field value Null($target->) : False
+If ($fieldNum>0)
+	$isNull:=Is field value Null($target->)
+Else 
+	$isNull:=False
+End if
 
 If ($isNull)
 	$value:=""
