@@ -78,140 +78,120 @@ var $value; $edited : Text
 var $labelName; $baseName; $varName; $sourceName : Text
 var $isNull : Boolean
 
-If (Is nil pointer($objPtr))
-	$target:=OBJECT Get pointer(Object current)
-Else 
-	$target:=$objPtr
-End if 
+// Omitted parameters use the type default. A Pointer default is nil.
+$target:=Is nil pointer($objPtr) ? OBJECT Get pointer(Object current) : $objPtr
+If (Is nil pointer($target))
+	return
+End if
 
-If (Not(Is nil pointer($target)))
-	
-	$event:=Form event code
-	$activeColor:=0x002F83FB
-	$inactiveColor:=0x00AAAAAA
-	
-	// Object names are unique on a form. OBJECT Get name(Object current)
-	// still returns that name from a project method called by the object
-	// method. RESOLVE POINTER leaves the variable name empty for a field,
-	// which used to name every field label "_JVF_obj".
-	$sourceName:=OBJECT Get name(Object current)
-	$currentPtr:=OBJECT Get pointer(Object current)
-	RESOLVE POINTER($target; $varName; $tableNum; $fieldNum)
-	
-	If (($sourceName#"") & ($currentPtr=$target))
-		$baseName:=$sourceName
+$event:=Form event code
+$activeColor:=0x002F83FB
+$inactiveColor:=0x00AAAAAA
+
+// Object names are unique on a form. OBJECT Get name(Object current)
+// still returns that name from a project method called by the object
+// method. RESOLVE POINTER leaves the variable name empty for a field,
+// which used to name every field label "_JVF_obj".
+$sourceName:=OBJECT Get name(Object current)
+$currentPtr:=OBJECT Get pointer(Object current)
+RESOLVE POINTER($target; $varName; $tableNum; $fieldNum)
+
+If (($sourceName#"") && ($currentPtr=$target))
+	$baseName:=$sourceName
+Else 
+	If ($varName#"")
+		$baseName:=$varName
 	Else 
-		If ($varName#"")
-			$baseName:=$varName
-		Else 
-			If (($tableNum#0) | ($fieldNum#0))
-				$baseName:="field_"+String($tableNum)+"_"+String($fieldNum)
-			Else 
-				$baseName:=$sourceName
-			End if 
-		End if 
+		$baseName:=(($tableNum#0) || ($fieldNum#0)) ? ("field_"+String($tableNum)+"_"+String($fieldNum)) : $sourceName
 	End if 
-	If ($baseName="")
-		$baseName:="JVF"
-	End if 
-	$labelName:=$baseName+"_JVF_obj"
-	
-	If ($fieldNum>0)
-		$isNull:=Is field value Null($target->)
-	Else 
-		$isNull:=False
-	End if 
-	
-	If ($isNull)
-		$value:=""
-	Else 
-		$fieldType:=Type($target->)
-		Case of 
-			: (($fieldType=Is alpha field) | ($fieldType=Is text) | ($fieldType=Is string var))
-				$value:=$target->
-				
-			: ($fieldType=Is date)  // null date -> empty string
-				$value:=String($target->; Blank if null date)
-				
-			: ($fieldType=Is time)  // null time (00:00:00) -> empty string
-				$value:=String($target->; Blank if null time)
-				
-			: (($fieldType=Is real) | ($fieldType=Is integer) | ($fieldType=Is longint) | ($fieldType=Is integer 64 bits))
-				// 0 is a stored value. Do not hide the label.
-				$value:=String($target->)
-				
-			Else 
-				$value:="X"  // any other type: show the label
-				
-		End case 
-	End if 
-	
-	// The label does not exist yet during On Load.
-	If ($event#On Load)
-		$labelPtr:=OBJECT Get pointer(Object named; $labelName)
-	End if 
-	
+End if 
+$baseName:=($baseName="") ? "JVF" : $baseName
+$labelName:=$baseName+"_JVF_obj"
+
+$isNull:=($fieldNum>0) ? Is field value Null($target->) : False
+
+If ($isNull)
+	$value:=""
+Else 
+	$fieldType:=Type($target->)
 	Case of 
+		: (($fieldType=Is alpha field) || ($fieldType=Is text) || ($fieldType=Is string var))
+			$value:=$target->
 			
-		: ($event=On Load)
+		: ($fieldType=Is date)  // null date -> empty string
+			$value:=String($target->; Blank if null date)
 			
-			// Place the label just above the input, using the template height
-			// and the input's left and right.
-			OBJECT GET COORDINATES($target->; $left; $top; $right; $bottom)
-			OBJECT GET COORDINATES(*; "JVF_obj"; $templateLeft; $templateTop; $templateRight; $templateBottom)
-			$labelTop:=$top-($templateBottom-$templateTop)
+		: ($fieldType=Is time)  // null time (00:00:00) -> empty string
+			$value:=String($target->; Blank if null time)
 			
-			// Omit newVar so 4D creates the dynamic variable (OBJECT DUPLICATE).
-			// The current syntax takes newVar and boundTo before the coordinates,
-			// so the position is applied with OBJECT MOVE in absolute mode:
-			// left, top, right, bottom.
-			OBJECT DUPLICATE(*; "JVF_obj"; $labelName)
-			If (OK=1)
-				OBJECT MOVE(*; $labelName; $left; $labelTop; $right; $top; *)
-				$labelPtr:=OBJECT Get pointer(Object named; $labelName)
-				If (Not(Is nil pointer($labelPtr)))
-					If ($value="")
-						$labelPtr->:=""
-					Else 
-						$labelPtr->:=OBJECT Get placeholder($target->)
-						OBJECT SET RGB COLORS(*; $labelName; $inactiveColor; Background color none)
-					End if 
-				End if 
-			End if 
-			
-		: ($event=On Losing Focus)
-			If (Not(Is nil pointer($labelPtr)))
-				If ($value="")
-					$labelPtr->:=""
-				End if 
-				OBJECT SET RGB COLORS(*; $labelName; $inactiveColor; Background color none)
-			End if 
-			
-		: (($event=On Getting Focus) & ($value#""))
-			If (Not(Is nil pointer($labelPtr)))
-				OBJECT SET RGB COLORS(*; $labelName; $activeColor; Background color none)
-				$labelPtr->:=OBJECT Get placeholder($target->)
-			End if 
-			
-		: ($event=On After Edit)
-			If (Not(Is nil pointer($labelPtr)))
-				OBJECT SET RGB COLORS(*; $labelName; $activeColor; Background color none)
-				$edited:=Get edited text
-				If ($edited="")
-					$labelPtr->:=""
-				Else 
-					$labelPtr->:=OBJECT Get placeholder($target->)
-				End if 
-			End if 
+		: (($fieldType=Is real) || ($fieldType=Is integer) || ($fieldType=Is longint) || ($fieldType=Is integer 64 bits))
+			// 0 is a stored value. Do not hide the label.
+			$value:=String($target->)
 			
 		Else 
-			
-			If (Not(Is nil pointer($labelPtr)))
-				If ($value="")
-					$labelPtr->:=""
-				End if 
-			End if 
+			$value:="X"  // any other type: show the label
 			
 	End case 
-	
 End if 
+
+// The label does not exist yet during On Load.
+If ($event#On Load)
+	$labelPtr:=OBJECT Get pointer(Object named; $labelName)
+End if 
+
+Case of 
+		
+	: ($event=On Load)
+		
+		// Place the label just above the input, using the template height
+		// and the input's left and right.
+		OBJECT GET COORDINATES($target->; $left; $top; $right; $bottom)
+		OBJECT GET COORDINATES(*; "JVF_obj"; $templateLeft; $templateTop; $templateRight; $templateBottom)
+		$labelTop:=$top-($templateBottom-$templateTop)
+		
+		// Omit newVar so 4D creates the dynamic variable (OBJECT DUPLICATE).
+		// The current syntax takes newVar and boundTo before the coordinates,
+		// so the position is applied with OBJECT MOVE in absolute mode:
+		// left, top, right, bottom.
+		OBJECT DUPLICATE(*; "JVF_obj"; $labelName)
+		If (OK=1)
+			OBJECT MOVE(*; $labelName; $left; $labelTop; $right; $top; *)
+			$labelPtr:=OBJECT Get pointer(Object named; $labelName)
+			If (Not(Is nil pointer($labelPtr)))
+				$labelPtr->:=($value="") ? "" : OBJECT Get placeholder($target->)
+				If ($value#"")
+					OBJECT SET RGB COLORS(*; $labelName; $inactiveColor; Background color none)
+				End if 
+			End if 
+		End if 
+		
+	: ($event=On Losing Focus)
+		If (Not(Is nil pointer($labelPtr)))
+			If ($value="")
+				$labelPtr->:=""
+			End if 
+			OBJECT SET RGB COLORS(*; $labelName; $inactiveColor; Background color none)
+		End if 
+		
+	: (($event=On Getting Focus) && ($value#""))
+		If (Not(Is nil pointer($labelPtr)))
+			OBJECT SET RGB COLORS(*; $labelName; $activeColor; Background color none)
+			$labelPtr->:=OBJECT Get placeholder($target->)
+		End if 
+		
+	: ($event=On After Edit)
+		If (Not(Is nil pointer($labelPtr)))
+			OBJECT SET RGB COLORS(*; $labelName; $activeColor; Background color none)
+			$edited:=Get edited text
+			$labelPtr->:=($edited="") ? "" : OBJECT Get placeholder($target->)
+		End if 
+		
+	Else 
+		
+		If (Not(Is nil pointer($labelPtr)))
+			If ($value="")
+				$labelPtr->:=""
+			End if 
+		End if 
+		
+End case 
